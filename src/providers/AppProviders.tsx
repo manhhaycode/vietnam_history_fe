@@ -12,7 +12,7 @@ const router = createBrowserRouter([
 export default function AppProvider() {
   return (
     <NextUIProvider>
-      <main className="dark text-foreground bg-background">
+      <main className="text-foreground bg-background">
         <RouterProvider router={router}></RouterProvider>
       </main>
     </NextUIProvider>

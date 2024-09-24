@@ -5,15 +5,28 @@ const { nextui } = require("@nextui-org/react");
 module.exports = {
   content: [
     // ...
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+      },
+    },
   },
   darkMode: "class",
   plugins: [
     nextui({
       prefix: "history",
+      themes: {
+        dark: {
+          colors: {
+            background: "#121212",
+          },
+        },
+      },
     }),
   ],
 };

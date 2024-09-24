@@ -1,3 +1,3 @@
-export default function ChatLayout() {
-  return <div>ChatLayout</div>;
-}
+import NavBar from "../components/NavBar/NavBar";
+
+export default function ChatLayout() {}
