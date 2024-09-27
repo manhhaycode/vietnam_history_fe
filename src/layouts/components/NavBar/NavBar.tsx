@@ -2,6 +2,8 @@ import { Logo } from "@/assets/icons";
 import { AccountMenu } from "@/features/user";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import { MdHistory } from "react-icons/md";
+import { TbSettings2 } from "react-icons/tb";
 
 export default function NavBar({
   children,
@@ -27,20 +29,20 @@ export default function NavBar({
           Help
         </ListboxItem>
         <ListboxItem
-          key={"help"}
+          key={"activity"}
           className="py-[10px] px-3 h-11 text-default-500"
           classNames={{ title: "truncate" }}
-          startContent={<IoInformationCircleOutline size={24} />}
+          startContent={<MdHistory size={24} />}
         >
-          Help
+          Activity
         </ListboxItem>
         <ListboxItem
-          key={"help"}
+          key={"settings"}
           className="py-[10px] px-3 h-11 text-default-500"
           classNames={{ title: "truncate" }}
-          startContent={<IoInformationCircleOutline size={24} />}
+          startContent={<TbSettings2 size={24} />}
         >
-          Help
+          Settings
         </ListboxItem>
       </Listbox>
     </nav>

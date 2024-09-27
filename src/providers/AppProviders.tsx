@@ -1,13 +1,12 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+} from "react-router-dom";
 import AppRoutes from "../routes";
 import { NextUIProvider } from "@nextui-org/react";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <AppRoutes />,
-  },
-]);
+const router = createBrowserRouter(createRoutesFromElements(AppRoutes()));
 
 export default function AppProvider() {
   return (

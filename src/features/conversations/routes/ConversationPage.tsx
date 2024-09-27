@@ -3,6 +3,7 @@ import ConversationList from "../components/ConversationList";
 import { Button } from "@nextui-org/react";
 import { AiOutlineMessage } from "react-icons/ai";
 import { IConversation } from "../types";
+import ConversationDetail from "../components/ConversationDetail/ConversationDetail";
 
 const conversations: IConversation[] = [
   { id: "1", name: "John Doe", messages: [] },
@@ -34,7 +35,9 @@ export default function ConversationPage() {
           </div>
         </NavBar>
       </div>
-      <div className="flex-1">{/* <Conversation /> */}</div>
+      <div className="flex-1 px-4">
+        <ConversationDetail />
+      </div>
     </div>
   );
 }
