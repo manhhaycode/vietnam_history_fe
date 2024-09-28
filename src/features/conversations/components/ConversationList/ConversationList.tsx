@@ -9,7 +9,6 @@ export default function ConversationList({
 }) {
   return (
     <div className="text-small w-full">
-      <p className="p-[10px] text-default-400">Recent</p>
       <ScrollShadow hideScrollBar className="max-h-full h-full">
         <Listbox>
           {conversationList.map((conversation) => (

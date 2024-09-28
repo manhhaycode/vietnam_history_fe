@@ -29,8 +29,8 @@ export default function ConversationPage() {
           >
             New Chat
           </Button>
+          <p className="px-4 py-3 text-small text-default-400">Recent</p>
           <div className="p-1 flex flex-1 overflow-hidden">
-            {/* <div className="h-[10000px]"></div> */}
             <ConversationList conversationList={conversations} />
           </div>
         </NavBar>
