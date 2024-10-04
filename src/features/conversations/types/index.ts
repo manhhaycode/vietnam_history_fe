@@ -1,11 +1,20 @@
-export interface IConversation {
+import CommonModel from '@/common/types';
+
+export interface IConversation extends CommonModel {
   id: string;
   name: string;
+  thumbnail: string;
+  metadata: string;
   messages: IMessage[];
 }
 
-export interface IMessage {
+export interface IMessage extends CommonModel {
   id: string;
-  text: string;
-  timestamp: number;
+  content: string;
+  metadata: string;
+}
+
+export interface IConversationFilter {
+  name?: string;
+  metadata?: string;
 }
