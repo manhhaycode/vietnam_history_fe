@@ -1,15 +1,23 @@
 import { Logo } from '@/assets/icons';
 import { AccountMenu } from '@/features/user';
-import { Listbox, ListboxItem } from '@nextui-org/react';
+import { useAppStore } from '@/libs/store';
+import { Button, Listbox, ListboxItem } from '@nextui-org/react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import { TbSettings2 } from 'react-icons/tb';
+import { TbLayoutSidebarRightExpand, TbSettings2 } from 'react-icons/tb';
+import { twMerge } from 'tailwind-merge';
 
 export default function NavBar({ children }: { children: React.ReactNode[] }) {
+  const { toggleNav } = useAppStore();
   return (
-    <nav className="flex flex-col flex-1 p-4 bg-[#18181B] h-full w-full">
-      <div className="flex gap-2 px-2 items-center mb-8">
-        <Logo />
-        <h1 className="font-bold">HISVN AI</h1>
+    <nav className={twMerge('flex flex-col flex-1 p-4 bg-[#18181B] h-full w-full transition-width')}>
+      <div className="flex justify-between items-center mb-8">
+        <div className="flex gap-2 px-2 items-center">
+          <Logo />
+          <h1 className="font-bold">HISVN AI</h1>
+        </div>
+        <Button className="text-default-500" isIconOnly variant="light" onClick={toggleNav}>
+          <TbLayoutSidebarRightExpand size={24} />
+        </Button>
       </div>
       <AccountMenu />
       {children}
