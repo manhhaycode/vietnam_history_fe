@@ -55,10 +55,10 @@ export const useGetConversations = (data: IFilter) => {
   });
 };
 
-export const useGetConversation = (id: string) => {
+export const useGetConversation = (id?: string) => {
   return useQuery({
     queryKey: ['conversation', id],
-    queryFn: () => getConversation(id),
+    queryFn: () => getConversation(id!),
     enabled: !!id,
   });
 };

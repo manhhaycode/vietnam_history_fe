@@ -4,7 +4,7 @@ import { Listbox, ListboxItem } from '@nextui-org/react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import { TbSettings2 } from 'react-icons/tb';
 
-export default function NavBar({ children }: { children: React.ReactNode | React.ReactNode[] }) {
+export default function NavBar({ children }: { children: React.ReactNode[] }) {
   return (
     <nav className="flex flex-col flex-1 p-4 bg-[#18181B] h-full w-full">
       <div className="flex gap-2 px-2 items-center mb-8">
