@@ -27,7 +27,7 @@ export default function ConversationDetail() {
     setTimeout(() => {
       const botReply = {
         id: Date.now() + 1,
-        content: 'This is a sample response from AcmeAI.',
+        content: 'This is a sample response from HISVN AI.',
         createBy: 'bot',
         avatar: 'https://static.vecteezy.com/system/resources/previews/022/739/948/original/chatbot-robo-advisor-chat-bot-robot-like-assistant-concept-of-digital-advisor-avatar-to-help-the-customer-icon-vector.jpg'  // Avatar bot
       };
@@ -40,7 +40,7 @@ export default function ConversationDetail() {
       
       
       <div className="border-b border-divider px-4 py-3 text-center">
-        HISAI v1
+        HISVN AI v1
       </div>
 
       {messages.length === 0 && (
@@ -84,7 +84,7 @@ export default function ConversationDetail() {
               }`}
               style={{ backgroundColor: msg.createBy === 'user' ? '#343541' : '#444654' }} 
             >
-              <strong>{msg.createBy === 'user' ? 'You' : 'Acme AI'}</strong>
+              <strong>{msg.createBy === 'user' ? 'You' : 'HISVNAI'}</strong>
               <div>{msg.content}</div>
             </div>
           </div>

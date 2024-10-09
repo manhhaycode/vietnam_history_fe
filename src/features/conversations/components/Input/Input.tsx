@@ -34,7 +34,7 @@ export default function Input({ onSendMessage }: InputProps) {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyPress={handleKeyPress}
-        placeholder="Send a message to AcmeAI"
+        placeholder="Send a message to HISVN AI"
         className="flex-grow p-3 rounded-full border-none bg-[#2A2A2A] text-white placeholder-gray-400 focus:outline-none"
         style={{ marginRight: '10px' }}
       />
