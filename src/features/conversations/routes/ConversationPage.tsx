@@ -4,8 +4,10 @@ import { Button } from '@nextui-org/react';
 import { AiOutlineMessage } from 'react-icons/ai';
 import ConversationDetail from '../components/ConversationDetail/ConversationDetail';
 import { useGetConversations } from '../api';
+import { useParams } from 'react-router-dom';
 
 export default function ConversationPage() {
+  const { conversationId } = useParams();
   const { data: conversations } = useGetConversations({ page: 1, size: 10 });
   return (
     <div className="flex h-[calc(100dvh)] py-4">
@@ -19,7 +21,9 @@ export default function ConversationPage() {
           </Button>
           <p className="px-4 py-3 text-small text-default-400">Recent</p>
           <div className="p-1 flex flex-1 overflow-hidden">
-            {conversations && <ConversationList conversationList={conversations.data} />}
+            {conversations && (
+              <ConversationList conversationList={conversations.data} selectedConversation={conversationId} />
+            )}
           </div>
         </NavBar>
       </div>

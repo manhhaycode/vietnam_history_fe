@@ -1,34 +1,37 @@
 import { IConversation } from '@/features/conversations';
 import { Listbox, ListboxItem, ScrollShadow } from '@nextui-org/react';
-import { BiDotsHorizontalRounded } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import ConversationPopup from './ConversationPopup';
+import { twMerge } from 'tailwind-merge';
 
-export default function ConversationList({ conversationList }: { conversationList: IConversation[] }) {
-  const navigate = useNavigate();
+export default function ConversationList({
+  conversationList,
+  selectedConversation,
+}: {
+  conversationList: IConversation[];
+  selectedConversation?: string;
+}) {
   return (
     <div className="text-small w-full">
       <ScrollShadow hideScrollBar className="max-h-full h-full">
-        <Listbox>
+        <Listbox classNames={{ list: 'gap-1' }}>
           {conversationList.map((conversation) => (
             <ListboxItem
-              onClick={() => {
-                navigate(`/conversations/${conversation.id}`);
+              id={'conversation-' + conversation.id}
+              classNames={{
+                base: twMerge(
+                  'p-0 text-default-500 data-[popover=true]:transition-colors data-[popover=true]:bg-default data-[popover=true]:text-default-foreground ',
+                  selectedConversation === conversation.id ? 'text-default-foreground bg-default' : '',
+                ),
               }}
+              hideSelectedIcon={true}
               key={conversation.id}
-              value={conversation.id}
-              className="py-[10px] px-3 h-11 text-default-500 group"
-              classNames={{ title: 'truncate' }}
-              endContent={
-                <BiDotsHorizontalRounded
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  size={24}
-                  className="hidden group-hover:block"
-                />
-              }
+              textValue={conversation.name}
+              endContent={<ConversationPopup conversation={conversation} />}
             >
-              {conversation.name}
+              <Link className="w-full p-3 block" to={`/conversations/${conversation.id}`}>
+                {conversation.name}
+              </Link>
             </ListboxItem>
           ))}
         </Listbox>
