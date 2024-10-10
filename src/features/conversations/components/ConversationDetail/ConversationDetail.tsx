@@ -28,7 +28,7 @@ export default function ConversationDetail() {
     setTimeout(() => {
       const botReply = {
         id: Date.now() + 1,
-        content: 'This is a sample response from AcmeAI.',
+        content: 'This is a sample response from HISVN AI.',
         createBy: 'bot',
         avatar:
           'https://static.vecteezy.com/system/resources/previews/022/739/948/original/chatbot-robo-advisor-chat-bot-robot-like-assistant-concept-of-digital-advisor-avatar-to-help-the-customer-icon-vector.jpg', // Avatar bot
