@@ -1,46 +1,92 @@
 import { useState} from 'react';
 import Input from '../Input';
 
+import { useAppStore } from '@/libs/store';
+import {
+  Button,
+  Listbox,
+  ListboxItem,
+  ListboxSection,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@nextui-org/react';
+import { useState } from 'react';
+import { GiJusticeStar } from 'react-icons/gi';
+import { IoIosArrowDown, IoIosCheckmarkCircle } from 'react-icons/io';
+import { TbLayoutSidebarRightCollapse } from 'react-icons/tb';
+import { useOverlayTriggerState } from 'react-stately';
+
 export default function ConversationDetail() {
-  const [messages, setMessages] = useState<any[]>([]); 
-  const [suggestions] = useState([  
-    { icon: '📘', text: 'Study Italian vocabulary' },
-    { icon: '💌', text: 'Message inviting friend to wedding' },
-    { icon: '📅', text: 'Experience Buenos Aires like a local' },
-    { icon: '🎮', text: 'Design a fun Tetris game' }
-  ]);
-  
-  const handleSendMessage = (message: string) => {
-    if (!message.trim()) return;
-
-    const userMessage = {
-      id: Date.now(),
-      content: message,
-      createBy: 'user',
-      avatar: 'https://static.znews.vn/static/topic/person/taylorswift.jpg'  
-    };
-
-   
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-
-    
-    setTimeout(() => {
-      const botReply = {
-        id: Date.now() + 1,
-        content: 'This is a sample response from HISVN AI.',
-        createBy: 'bot',
-        avatar: 'https://static.vecteezy.com/system/resources/previews/022/739/948/original/chatbot-robo-advisor-chat-bot-robot-like-assistant-concept-of-digital-advisor-avatar-to-help-the-customer-icon-vector.jpg'  // Avatar bot
-      };
-      setMessages((prevMessages) => [...prevMessages, botReply]);
-    }, 1000);
-  };
-
+  //   const { conversationId } = useParams();
+  const { isNavExpanded, toggleNav } = useAppStore();
+  const [selectedModel, setSelectedModel] = useState(new Set<string>('model3'));
+  const modeOverlayState = useOverlayTriggerState({});
   return (
-    <div className="w-full h-full flex flex-col text-small text-default-400">
-      
-      
-      <div className="border-b border-divider px-4 py-3 text-center">
-        HISVN AI v1
+    <div className="w-full h-full border border-divider rounded-xl pb-3 text-small text-default-400">
+      <div className="border-b border-divider p-2 relative min-h-14">
+        {!isNavExpanded && (
+          <Button className="text-default-500" isIconOnly variant="light" onClick={toggleNav}>
+            <TbLayoutSidebarRightCollapse size={24} />
+          </Button>
+        )}
+        <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
+          <Popover state={modeOverlayState} placement="bottom" offset={24}>
+            <PopoverTrigger>
+              <button className="flex items-center gap-2 outline-none">
+                HISAI v1
+                <IoIosArrowDown size={18} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="p-1">
+              <Listbox
+                selectionMode="single"
+                selectedKeys={selectedModel}
+                onSelectionChange={(e) => {
+                  setSelectedModel(e as Set<string>);
+                  modeOverlayState.close();
+                }}
+                variant="faded"
+              >
+                <ListboxSection title="Models">
+                  <ListboxItem
+                    selectedIcon={<IoIosCheckmarkCircle size={20} />}
+                    description="Newest and most advanced model"
+                    key="model3"
+                    textValue="HISAI v3"
+                    className="text-default-500 data-[hover=true]:text-default-500 px-2 py-[6px]"
+                    classNames={{ selectedIcon: 'w-[20px] h-[20px]' }}
+                    startContent={<GiJusticeStar size={20} />}
+                  >
+                    HISAI v3
+                  </ListboxItem>
+                  <ListboxItem
+                    selectedIcon={<IoIosCheckmarkCircle size={20} />}
+                    description="Advanced model for complex tasks"
+                    key="model2"
+                    textValue="HISAI v2"
+                    className="text-default-500 data-[hover=true]:text-default-500 px-2 py-[6px]"
+                    classNames={{ selectedIcon: 'w-[20px] h-[20px]' }}
+                    startContent={<GiJusticeStar size={20} />}
+                  >
+                    HISAI v2
+                  </ListboxItem>
+                  <ListboxItem
+                    selectedIcon={<IoIosCheckmarkCircle size={20} />}
+                    description="Newest and most advanced model"
+                    key="model1"
+                    textValue="HISAI v1"
+                    className="text-default-500 data-[hover=true]:text-default-500 px-2 py-[6px]"
+                    classNames={{ selectedIcon: 'w-[20px] h-[20px]' }}
+                    startContent={<GiJusticeStar size={20} />}
+                  >
+                    HISAI v1
+                  </ListboxItem>
+                </ListboxSection>
+              </Listbox>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       {messages.length === 0 && (

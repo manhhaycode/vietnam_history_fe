@@ -30,11 +30,12 @@ export default function ConversationPopup({
           <BiDotsHorizontalRounded size={24} />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="min-w-[200px]">
+      <PopoverContent className="min-w-[200px] p-1">
         <Listbox variant="faded">
           <ListboxItem
             onClick={() => state.close()}
             key="Share"
+            textValue="Share"
             className="text-default-500 data-[hover=true]:text-default-500 px-2 py-[6px]"
             startContent={<FaRegShareSquare size={20} />}
           >
@@ -43,6 +44,7 @@ export default function ConversationPopup({
           <ListboxItem
             onClick={() => state.close()}
             key="Rename"
+            textValue="Rename"
             className="text-default-500 data-[hover=true]:text-default-500 px-2 py-[6px]"
             startContent={<GoPencil size={20} />}
           >
@@ -51,6 +53,7 @@ export default function ConversationPopup({
           <ListboxItem
             onClick={() => state.close()}
             key="Archive"
+            textValue="Archive"
             className="text-default-500 data-[hover=true]:text-default-500 px-2 py-[6px]"
             startContent={<BsArchive size={20} />}
           >
@@ -60,6 +63,7 @@ export default function ConversationPopup({
             onClick={() => state.close()}
             color="danger"
             key="Delete"
+            textValue="Delete"
             className="text-danger px-2 py-[6px]"
             startContent={<GoTrash size={20} />}
           >
