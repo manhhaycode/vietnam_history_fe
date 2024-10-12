@@ -4,7 +4,9 @@ import { FaRegShareSquare } from 'react-icons/fa';
 import { GoPencil, GoTrash } from 'react-icons/go';
 import { BsArchive } from 'react-icons/bs';
 import { BiDotsHorizontalRounded } from 'react-icons/bi';
-import { OverlayTriggerProps, useOverlayTriggerState } from 'react-stately';
+import { useOverlayTriggerState } from '@react-stately/overlays';
+import { OverlayTriggerProps } from '@react-stately/overlays';
+
 
 export default function ConversationPopup({
   conversation,
