@@ -1,4 +1,4 @@
-import CommonModel from '@/common/types';
+import { CommonModel } from '@/common/types';
 
 export interface IConversation extends CommonModel {
   id: string;
