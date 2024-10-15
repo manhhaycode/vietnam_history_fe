@@ -1,3 +1,4 @@
+import { useLogoutMutation } from '@/features/auth';
 import { useAuthStore } from '@/libs/store';
 import {
   Avatar,
@@ -8,10 +9,20 @@ import {
   DropdownSection,
   DropdownTrigger,
 } from '@nextui-org/react';
+import toast from 'react-hot-toast';
 import { TbSelector } from 'react-icons/tb';
 
 export default function AccountMenu() {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
+  const logoutMutation = useLogoutMutation({
+    onSuccess: () => {
+      toast.success('Sign out successfully.', { id: 'signing-out' });
+      setUser(null);
+    },
+    onError: () => {
+      toast.error("Can't sign out. Please try again later.", { id: 'signing-out' });
+    },
+  });
   return (
     user && (
       <Dropdown>
@@ -53,7 +64,14 @@ export default function AccountMenu() {
           </DropdownSection>
           <DropdownSection>
             <DropdownItem className="text-default-500">Help & Support</DropdownItem>
-            <DropdownItem className="text-danger" color="danger">
+            <DropdownItem
+              onClick={() => {
+                logoutMutation.mutate(user.id);
+                toast.loading('Signing out...', { id: 'signing-out' });
+              }}
+              className="text-danger"
+              color="danger"
+            >
               Sign out
             </DropdownItem>
           </DropdownSection>

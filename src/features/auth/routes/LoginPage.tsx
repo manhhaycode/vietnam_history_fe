@@ -32,20 +32,23 @@ export default function LoginPage() {
   });
 
   const verifyTokenMutation = useVerifyTokenMutation({
+    onMutate: () => {
+      toast.loading('Login in...', { id: 'login' });
+    },
     onSuccess: (data) => {
       if (data.code === 200) {
         userProfileMutation.mutate();
       }
     },
     onError: () => {
-      toast.error('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.', { id: 'login' });
     },
   });
 
   const userProfileMutation = useGetUserProfileMutation({
     onSuccess: (data) => {
       setUser(data.user);
-      toast.success('Login successfully');
+      toast.success('Login successfully', { id: 'login' });
       setTimeout(() => {
         navigate('/');
       }, 200);

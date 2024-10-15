@@ -33,6 +33,15 @@ export const refreshToken = async (data: IRefreshTokenRequest): Promise<IRefresh
   }
 };
 
+export const logout = async (userId: string): Promise<boolean> => {
+  try {
+    const response = await httpRequest.post(`/auth/force-logout?userId=${userId}`);
+    return response;
+  } catch (error) {
+    throw new Error(error as any);
+  }
+};
+
 export const useGetGoogleAuthUrlMutation = (
   options?: UseMutationOptions<IGoogleAuthUrlResponse, unknown, string, unknown>,
 ) => {
@@ -59,6 +68,14 @@ export const useRefreshTokenMutation = (
   return useMutation({
     mutationKey: ['refreshToken'],
     mutationFn: refreshToken,
+    ...options,
+  });
+};
+
+export const useLogoutMutation = (options?: UseMutationOptions<boolean, unknown, string, unknown>) => {
+  return useMutation({
+    mutationKey: ['logout'],
+    mutationFn: logout,
     ...options,
   });
 };
