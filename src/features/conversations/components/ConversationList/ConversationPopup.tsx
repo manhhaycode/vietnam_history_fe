@@ -1,5 +1,5 @@
 import { Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
-import { IConversation } from '../../types';
+import { IConversationItem } from '../../types';
 import { FaRegShareSquare } from 'react-icons/fa';
 import { GoPencil, GoTrash } from 'react-icons/go';
 import { BsArchive } from 'react-icons/bs';
@@ -9,7 +9,7 @@ import { OverlayTriggerProps, useOverlayTriggerState } from 'react-stately';
 export default function ConversationPopup({
   conversation,
   ...props
-}: { conversation: IConversation } & OverlayTriggerProps) {
+}: { conversation: IConversationItem } & OverlayTriggerProps) {
   const state = useOverlayTriggerState({
     ...props,
     onOpenChange: (isOpen) => {

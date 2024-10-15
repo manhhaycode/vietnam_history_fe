@@ -1,4 +1,4 @@
-import { IConversation } from '@/features/conversations';
+import { IConversationItem } from '@/features/conversations';
 import { Listbox, ListboxItem, ScrollShadow } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
 import ConversationPopup from './ConversationPopup';
@@ -10,7 +10,7 @@ export default function ConversationList({
   conversationList,
   selectedConversation,
 }: {
-  conversationList: IConversation[];
+  conversationList: IConversationItem[];
   selectedConversation?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);

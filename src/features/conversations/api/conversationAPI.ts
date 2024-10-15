@@ -1,12 +1,11 @@
-import { IFilter, IPagination } from '@/common/types';
 import * as httpRequest from '@/libs/axios';
-import { IConversation } from '../types';
+import { IConversation, IConversationItem, IConversationListRes } from '../types';
 import { useQuery, useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-export const getConversations = async (data: IFilter): Promise<IPagination<IConversation>> => {
+export const getConversations = async (): Promise<IConversationItem[]> => {
   try {
-    const response = await httpRequest.post('/conversations', data);
-    return response;
+    const response: IConversationListRes = await httpRequest.get('/conversations');
+    return response.conversations;
   } catch (error) {
     throw new Error(error as any);
   }
@@ -47,11 +46,11 @@ export const deleteConversation = async (id: string): Promise<void> => {
   }
 };
 
-export const useGetConversations = (data: IFilter) => {
+export const useGetConversations = () => {
   return useQuery({
-    queryKey: ['conversations', data],
-    queryFn: () => getConversations(data),
-    enabled: !!data.page || !!data.search || !!data.size,
+    queryKey: ['conversations'],
+    queryFn: () => getConversations(),
+    // enabled: !!data.page || !!data.search || !!data.size,
   });
 };
 

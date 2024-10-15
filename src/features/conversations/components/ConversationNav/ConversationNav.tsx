@@ -14,7 +14,7 @@ export default function ConversationNav() {
   const { conversationId } = useParams();
   const { isNavExpanded, isFloatingNav, setNavExpanded, setFloatingNav } = useAppStore();
   const isSmallScreen = useMedia('(max-width: 768px)');
-  const { data: conversations } = useGetConversations({ page: 1, size: 10 });
+  const { data: conversations } = useGetConversations();
 
   useEffect(() => {
     setNavExpanded(!isSmallScreen);
@@ -57,7 +57,7 @@ export default function ConversationNav() {
           <p className="px-4 py-3 text-small text-default-400">Recent</p>
           <div className="p-1 flex flex-1 overflow-hidden">
             {conversations && (
-              <ConversationList conversationList={conversations.data} selectedConversation={conversationId} />
+              <ConversationList conversationList={conversations} selectedConversation={conversationId} />
             )}
           </div>
         </NavBar>

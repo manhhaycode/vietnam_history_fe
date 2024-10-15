@@ -1,2 +1,3 @@
 import LoginPage from './LoginPage';
-export { LoginPage };
+import GoogleOAuthCallbackPage from './GoogleOAuthCallbackPage';
+export { LoginPage, GoogleOAuthCallbackPage };

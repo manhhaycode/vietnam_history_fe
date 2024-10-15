@@ -1,10 +1,10 @@
 import * as httpRequest from '@/libs/axios';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-import { IGoogleAuthUrlResponse, IVerifyTokenResponse } from '../types';
-
-export const getGoogleAuthUrl = async (): Promise<IGoogleAuthUrlResponse> => {
+import { IGoogleAuthUrlResponse, IRefreshTokenRequest, IRefreshTokenResponse, IVerifyTokenResponse } from '../types';
+import Cookies from 'js-cookie';
+export const getGoogleAuthUrl = async (redirect: string): Promise<IGoogleAuthUrlResponse> => {
   try {
-    const response = await httpRequest.post('/auth/login-google');
+    const response = await httpRequest.post('/auth/login-google', { redirect });
     return response;
   } catch (error) {
     throw new Error(error as any);
@@ -13,7 +13,20 @@ export const getGoogleAuthUrl = async (): Promise<IGoogleAuthUrlResponse> => {
 
 export const verifyToken = async (localToken: string): Promise<IVerifyTokenResponse> => {
   try {
-    const response = httpRequest.get('/auth/verify-token', { params: { token: localToken } });
+    const response: IVerifyTokenResponse = await httpRequest.get('/auth/verify-token', {
+      params: { token: localToken },
+    });
+    Cookies.set('vn-history-at', response.accessToken, { expires: response.accessTokenExpiredAt });
+    Cookies.set('vn-history-rt', response.refreshToken, { expires: response.refreshTokenExpiredAt });
+    return response;
+  } catch (error) {
+    throw new Error(error as any);
+  }
+};
+
+export const refreshToken = async (data: IRefreshTokenRequest): Promise<IRefreshTokenResponse> => {
+  try {
+    const response = await httpRequest.post('/auth/refresh-token', data);
     return response;
   } catch (error) {
     throw new Error(error as any);
@@ -21,7 +34,7 @@ export const verifyToken = async (localToken: string): Promise<IVerifyTokenRespo
 };
 
 export const useGetGoogleAuthUrlMutation = (
-  options?: UseMutationOptions<IGoogleAuthUrlResponse, unknown, void, unknown>,
+  options?: UseMutationOptions<IGoogleAuthUrlResponse, unknown, string, unknown>,
 ) => {
   return useMutation({
     mutationKey: ['getGoogleAuthUrl'],
@@ -36,6 +49,16 @@ export const useVerifyTokenMutation = (
   return useMutation({
     mutationKey: ['verifyToken'],
     mutationFn: verifyToken,
+    ...options,
+  });
+};
+
+export const useRefreshTokenMutation = (
+  options?: UseMutationOptions<IRefreshTokenResponse, unknown, IRefreshTokenRequest, unknown>,
+) => {
+  return useMutation({
+    mutationKey: ['refreshToken'],
+    mutationFn: refreshToken,
     ...options,
   });
 };

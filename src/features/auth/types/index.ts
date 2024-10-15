@@ -13,3 +13,13 @@ export interface IVerifyTokenResponse extends IResponse {
   accessTokenExpiredAt: number;
   refreshTokenExpiredAt: number;
 }
+
+export interface IRefreshTokenRequest {
+  userId: string;
+  refreshToken: string;
+}
+
+export interface IRefreshTokenResponse extends IResponse {
+  accessToken: string;
+  accessTokenExpiredAt: number;
+}
