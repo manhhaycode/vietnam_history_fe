@@ -20,9 +20,9 @@ console.warn = (...args) => {
   originalWarn(...args);
 };
 
-if (import.meta.env.DEV) {
-  makeServer({ environment: 'development' });
-}
+// if (import.meta.env.DEV) {
+//   makeServer({ environment: 'development' });
+// }
 
 document.documentElement.classList.add('dark');
 

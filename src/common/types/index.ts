@@ -1,4 +1,9 @@
-export default interface CommonModel {
+export interface IResponse {
+  code: number;
+  message: string;
+}
+
+export interface CommonModel {
   createAt: string;
   updateAt: string;
   createBy: string;
