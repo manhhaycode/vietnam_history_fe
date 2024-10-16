@@ -17,10 +17,11 @@ export default function LoginPage() {
     onSuccess: (data) => {
       const handleMessage = (event: MessageEvent<any>) => {
         // check if the origin is the same
-        if (event.origin !== window.location.origin) return;
+        if (event.origin !== window.location.origin || event.data !== 'GoogleOAuthSuccess') return;
         verifyTokenMutation.mutate(data.localToken);
         window.removeEventListener('message', handleMessage);
       };
+      console.log(data.url);
       popupWindow(data.url, 'Google Auth', 500, 600);
       setIsPopupOpen(true);
       // when receive message from popup then verify token

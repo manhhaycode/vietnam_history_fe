@@ -5,7 +5,7 @@ export default function GoogleOAuthCallbackPage() {
   const location = useLocation();
 
   useEffect(() => {
-    window.opener.postMessage(location.search, window.location.origin);
+    window.opener.postMessage('GoogleOAuthSuccess', window.location.origin);
     window.close();
   }, [location.search]);
 
