@@ -2,27 +2,30 @@ import { Button, Card, Divider } from '@nextui-org/react';
 import { FcGoogle } from 'react-icons/fc';
 import { useGetGoogleAuthUrlMutation, useVerifyTokenMutation } from '../api';
 import toast from 'react-hot-toast';
-import queryClient from '@/libs/tanstack-query';
+import { popupWindow } from '@/libs/utils';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { useGetUserProfileMutation } from '@/features/user';
+import { useAuthStore } from '@/libs/store';
 
 export default function LoginPage() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { setUser } = useAuthStore();
+  const navigate = useNavigate();
   const loginGoogleMutation = useGetGoogleAuthUrlMutation({
     onSuccess: (data) => {
-      window.open(data.url, 'Google Auth', 'width=500,height=600')?.focus();
-
-      // save local token to verify token
-      localStorage.setItem('localToken', data.localToken);
-
-      // verify token by looping every 3 seconds until success
-      const interval = setInterval(() => {
-        verifyTokenMutation.mutate(data.localToken, {
-          onSuccess: (res) => {
-            if (res.code === 200) {
-              clearInterval(interval);
-              queryClient.cancelQueries({ queryKey: ['verifyToken'] });
-            }
-          },
-        });
-      }, 3000);
+      const handleMessage = (event: MessageEvent<any>) => {
+        // check if the origin is the same
+        if (event.origin !== window.location.origin || event.data !== 'GoogleOAuthSuccess') return;
+        verifyTokenMutation.mutate(data.localToken);
+        window.removeEventListener('message', handleMessage);
+      };
+      console.log(data.url);
+      popupWindow(data.url, 'Google Auth', 500, 600);
+      setIsPopupOpen(true);
+      // when receive message from popup then verify token
+      window.addEventListener('message', handleMessage);
     },
     onError: () => {
       toast.error('Something went wrong. Please try again.');
@@ -30,19 +33,34 @@ export default function LoginPage() {
   });
 
   const verifyTokenMutation = useVerifyTokenMutation({
+    onMutate: () => {
+      toast.loading('Login in...', { id: 'login' });
+    },
     onSuccess: (data) => {
       if (data.code === 200) {
-        window.close();
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        toast.success('Login successfully');
-        setTimeout(() => {
-          // reload page and close all popups
-          window.location.reload();
-        }, 1000);
+        userProfileMutation.mutate();
       }
     },
+    onError: () => {
+      toast.error('Something went wrong. Please try again.', { id: 'login' });
+    },
   });
+
+  const userProfileMutation = useGetUserProfileMutation({
+    onSuccess: (data) => {
+      setUser(data.user);
+      toast.success('Login successfully', { id: 'login' });
+      setTimeout(() => {
+        navigate('/');
+      }, 200);
+    },
+  });
+
+  useEffect(() => {
+    if (Cookies.get('vn-history-at') || Cookies.get('vn-history-rt')) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   return (
     <div className="h-[calc(100dvh)]">
@@ -57,11 +75,17 @@ export default function LoginPage() {
                 fillRule="evenodd"
               ></path>
             </svg>
-            <p className="text-xl font-medium">Welcome Back</p>
+            <p className="text-xl font-medium">Welcome To HISVNAI</p>
             <p className="text-small text-default-500">Log in to your account to continue</p>
             <Divider className="my-6" />
             <Button
-              onClick={() => loginGoogleMutation.mutate()}
+              disabled={
+                loginGoogleMutation.isPending ||
+                isPopupOpen ||
+                verifyTokenMutation.isPending ||
+                userProfileMutation.isPending
+              }
+              onClick={() => loginGoogleMutation.mutate(self.location.origin + '/auth/google/callback')}
               fullWidth
               variant="faded"
               startContent={<FcGoogle size={24} />}

@@ -1,5 +1,6 @@
 import config from '@/configs';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import Cookies from 'js-cookie';
 
 const httpRequest = axios.create({
   baseURL: config.API.API_URL,
@@ -8,6 +9,16 @@ const httpRequest = axios.create({
 export const sleep = (ms = 500): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
+
+// add request interceptor to add token to request header
+httpRequest.interceptors.request.use((config) => {
+  // get access token from cookie
+  const accessToken = Cookies.get('vn-history-at');
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+});
 
 httpRequest.interceptors.response.use(undefined, async (error: AxiosError) => {
   if (error.response) {

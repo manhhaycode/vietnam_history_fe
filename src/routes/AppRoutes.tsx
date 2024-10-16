@@ -1,15 +1,17 @@
 import Error from '@/components/Error';
-import { LoginPage } from '@/features/auth';
+import { GoogleOAuthCallbackPage, LoginPage } from '@/features/auth';
 import ConversationPage from '@/features/conversations/routes/ConversationPage';
+import { WithAuthencation } from '@/hoocs';
 import { Route, Routes } from 'react-router-dom';
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/">
+      <Route element={<WithAuthencation />} path="/">
         <Route index element={<ConversationPage />} />
         <Route path="/conversations/:conversationId" element={<ConversationPage />} />
       </Route>
+      <Route path="auth/google/callback" element={<GoogleOAuthCallbackPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="*" element={<Error />}></Route>
     </Routes>
