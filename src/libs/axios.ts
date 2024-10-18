@@ -1,6 +1,7 @@
 import config from '@/configs';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
+import { useAuthStore } from './store';
 
 const httpRequest = axios.create({
   baseURL: config.API.API_URL,
@@ -22,6 +23,10 @@ httpRequest.interceptors.request.use((config) => {
 
 httpRequest.interceptors.response.use(undefined, async (error: AxiosError) => {
   if (error.response) {
+    if (error.response.status === 401 || error.response.status === 403) {
+      // remove all cookies, set auth state to null
+      useAuthStore.setState({ user: null });
+    }
     return Promise.reject(error.response.data);
   } else {
     throw new Error('Network Error');
