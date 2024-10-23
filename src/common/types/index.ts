@@ -4,10 +4,10 @@ export interface IResponse {
 }
 
 export interface CommonModel {
-  createAt: string;
-  updateAt: string;
-  createBy: string;
-  updateBy: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
 }
 
 export interface IPagination<T> {

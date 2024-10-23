@@ -14,6 +14,7 @@ export interface IMessage extends CommonModel {
   id: string;
   content: string;
   metadata: string;
+  conversationId?: string;
 }
 
 export interface IConversationFilter {
@@ -23,4 +24,22 @@ export interface IConversationFilter {
 
 export interface IConversationListRes extends IResponse {
   conversations: IConversationItem[];
+}
+
+export interface IFilterScope {
+  topic: string;
+  era: string;
+  artifact: string;
+  place: string;
+  figure: string;
+}
+
+export interface IConversationMessagesRes extends IResponse {
+  messages: IMessage[];
+}
+
+export interface IConversationCreateMessageRes extends IResponse {
+  result: {
+    count: number;
+  };
 }
