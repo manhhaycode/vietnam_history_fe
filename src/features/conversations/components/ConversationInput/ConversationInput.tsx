@@ -7,7 +7,7 @@ export default function ConversationInput({
   onSubmit,
   disabled,
 }: {
-  onSubmit: (message: string) => void;
+  onSubmit: (message: string, clearMessage: () => void) => void;
   disabled?: boolean;
 }) {
   const [message, setMessage] = useState('');
@@ -22,7 +22,7 @@ export default function ConversationInput({
       startContent={<Button isIconOnly variant="light" startContent={<ImAttachment size={20} />}></Button>}
       endContent={
         <Button
-          onPress={() => onSubmit(message)}
+          onPress={() => onSubmit(message, setMessage.bind(null, ''))}
           isIconOnly
           variant="light"
           startContent={<FaArrowCircleUp size={24} />}

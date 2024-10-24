@@ -34,6 +34,10 @@ export interface IFilterScope {
   figure: string;
 }
 
+export interface ICreateConversationRes extends IResponse {
+  conversation: IConversation;
+}
+
 export interface IConversationMessagesRes extends IResponse {
   messages: IMessage[];
 }

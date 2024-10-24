@@ -21,21 +21,13 @@ export default function ConversationDetail() {
   const { messages, setMessages } = useConversationStore();
   const navigate = useNavigate();
   const [isCreateNew, setIsCreateNew] = useState(false);
-  const manageFilterModal = useDisclosure({
-    defaultOpen: false,
-    onClose: () => {
-      console.log('onClose');
-    },
-    onOpen: () => {
-      console.log('onOpen');
-    },
-  });
+  const manageFilterModal = useDisclosure({ defaultOpen: false });
   const createConversationMutation = useCreateConversationMutation({
-    onSuccess: (data) => {
+    onSuccess: ({ conversation }) => {
       setIsCreateNew(true);
-      navigate('/conversations/' + data.id);
-      setMessages([{ ...messages[0], conversationId: data.id }]);
-      createMessageConversationMutation.mutate({ conversationId: data.id, message: messages[0].content });
+      navigate('/conversations/' + conversation.id);
+      setMessages([{ ...messages[0], conversationId: conversation.id }]);
+      createMessageConversationMutation.mutate({ conversationId: conversation.id, message: messages[0].content });
     },
     onError: () => {
       console.log('onError');
@@ -43,41 +35,40 @@ export default function ConversationDetail() {
   });
   const createMessageConversationMutation = useCreateMessageConversationMutation({
     onSuccess: (data, variables) => {
-      messages.push({
-        content: data.message,
-        id: uuidv4(),
-        metadata: '',
-        conversationId: variables.conversationId,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        createdBy: 'bot',
-        updatedBy: 'bot',
-      });
+      if (isCreateNew) {
+        setIsCreateNew(false);
+      }
+      setMessages([
+        ...messages,
+        {
+          content: data.message,
+          id: uuidv4(),
+          metadata: '',
+          conversationId: variables.conversationId,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdBy: 'bot',
+          updatedBy: 'bot',
+        },
+      ]);
     },
     onError: () => {
       console.log('onError');
     },
   });
   const { isLoading: isConversationDetailLoading } = useGetConversation(conversationId);
-  const { data: conversationMessageList } = useGetConversationMessages(conversationId);
+  const { data: conversationMessageList } = useGetConversationMessages(conversationId, !isCreateNew);
 
   useEffect(() => {
-    if (isCreateNew) {
-      if (conversationMessageList) {
-        setMessages(conversationMessageList.messages);
-        setIsCreateNew(false);
-      }
-    } else {
-      setMessages(conversationMessageList?.messages ?? []);
-    }
-  }, [conversationMessageList, isCreateNew, setMessages]);
+    setMessages(conversationMessageList?.messages ?? []);
+  }, [conversationMessageList, setMessages]);
 
   return (
     <div className="w-full h-full flex flex-col border border-divider rounded-xl pb-3 text-small text-default-400">
       <HeaderConversation />
       <div className="px-6 flex flex-col gap-3 justify-center items-center flex-1 overflow-hidden">
         {conversationId || messages.length ? (
-          isConversationDetailLoading ? (
+          isConversationDetailLoading && !isCreateNew ? (
             <Spinner className="flex items-center justify-center w-full h-full" size="lg" color="warning"></Spinner>
           ) : (
             <ConversationMessageList />
@@ -88,7 +79,7 @@ export default function ConversationDetail() {
         )}
         <ConversationInput
           disabled={createConversationMutation.isPending || createMessageConversationMutation.isPending}
-          onSubmit={(message) => {
+          onSubmit={(message, clearMessage) => {
             if (conversationId) {
               createMessageConversationMutation.mutate({ conversationId, message });
               setMessages([
@@ -119,6 +110,7 @@ export default function ConversationDetail() {
                 },
               ]);
             }
+            clearMessage();
           }}
         />
         <p className="font-medium">HISVN AI có khả năng nhầm lẫn. Hãy kiểm tra kỹ thông tin.</p>

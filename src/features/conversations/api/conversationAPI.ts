@@ -5,6 +5,7 @@ import {
   IConversationItem,
   IConversationListRes,
   IConversationMessagesRes,
+  ICreateConversationRes,
 } from '../types';
 import { useQuery, useMutation, UseMutationOptions } from '@tanstack/react-query';
 
@@ -35,7 +36,7 @@ export const getConversationMessages = async (id: string): Promise<IConversation
   }
 };
 
-export const createConversation = async (conversation: Partial<IConversation>): Promise<IConversation> => {
+export const createConversation = async (conversation: Partial<IConversation>): Promise<ICreateConversationRes> => {
   try {
     const response = await httpRequest.post('/conversations', conversation);
     return response;
@@ -91,17 +92,17 @@ export const useGetConversation = (id?: string) => {
   });
 };
 
-export const useGetConversationMessages = (id?: string) => {
+export const useGetConversationMessages = (id?: string, isEnable: boolean = true) => {
   return useQuery({
     queryKey: ['conversationMessages', id],
     queryFn: () => getConversationMessages(id!),
-    enabled: !!id,
+    enabled: !!id && isEnable,
     placeholderData: undefined,
   });
 };
 
 export const useCreateConversationMutation = (
-  options?: UseMutationOptions<IConversation, Error, Partial<IConversation>>,
+  options?: UseMutationOptions<ICreateConversationRes, Error, Partial<IConversation>>,
 ) => {
   return useMutation({
     mutationKey: ['createConversation'],
