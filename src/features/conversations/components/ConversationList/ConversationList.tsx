@@ -27,7 +27,7 @@ export default function ConversationList({
 
   return (
     <div className="text-small w-full">
-      <ScrollShadow ref={ref} hideScrollBar className="max-h-full h-full">
+      <ScrollShadow ref={ref} hideScrollBar className="max-h-full h-full pb-5">
         <Listbox classNames={{ list: 'gap-1' }}>
           {conversationList.map((conversation) => (
             <ListboxItem

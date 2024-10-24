@@ -50,7 +50,7 @@ export default function ConversationNav() {
       >
         <NavBar>
           <Button
-            className="bg-default-foreground text-default-50 h-12 w-full justify-start mt-2 mb-6 flex-none"
+            className="bg-default-foreground text-default-50 h-12 w-full justify-start mt-2 mb-3 flex-none"
             startContent={<AiOutlineMessage size={24} />}
             onClick={() => {
               navigate('/?type=new');

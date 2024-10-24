@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/libs/store';
 import { Avatar } from '@nextui-org/react';
 import { IMessage } from '@/features/conversations';
+import dayjs from 'dayjs';
 
 export default function ConversationMessageUser({ message }: { message: IMessage }) {
   const { user } = useAuthStore();
@@ -8,8 +9,8 @@ export default function ConversationMessageUser({ message }: { message: IMessage
     <div className="flex w-full gap-x-3 items-start justify-end">
       <div className="flex flex-col">
         <div className="flex gap-x-2 items-center">
-          <div className="text-sm font-semibold text-default-500">{message.createdBy}</div>
-          <div className="text-xs text-default-400">{message.createdAt}</div>
+          <div className="text-sm font-semibold text-default-500">{user?.fullName}</div>
+          <div className="text-xs text-default-400">{dayjs(message.createdAt).format('HH:mm')}</div>
         </div>
         <div className="text-sm text-default-500">{message.content}</div>
       </div>

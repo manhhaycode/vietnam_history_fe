@@ -14,6 +14,7 @@ import { Spinner, useDisclosure } from '@nextui-org/react';
 import MessageFilterScopeModal from '../MessageFilterScopeModal';
 import { useAuthStore, useConversationStore } from '@/libs/store';
 import { v4 as uuidv4 } from 'uuid';
+import queryClient from '@/libs/tanstack-query';
 
 export default function ConversationDetail() {
   const { conversationId } = useParams();
@@ -23,8 +24,9 @@ export default function ConversationDetail() {
   const [isCreateNew, setIsCreateNew] = useState(false);
   const manageFilterModal = useDisclosure({ defaultOpen: false });
   const createConversationMutation = useCreateConversationMutation({
-    onSuccess: ({ conversation }) => {
+    onSuccess: async ({ conversation }) => {
       setIsCreateNew(true);
+      await queryClient.invalidateQueries({ queryKey: ['conversations'] });
       navigate('/conversations/' + conversation.id);
       setMessages([{ ...messages[0], conversationId: conversation.id }]);
       createMessageConversationMutation.mutate({ conversationId: conversation.id, message: messages[0].content });
@@ -61,12 +63,21 @@ export default function ConversationDetail() {
 
   useEffect(() => {
     setMessages(conversationMessageList?.messages ?? []);
-  }, [conversationMessageList, setMessages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationMessageList]);
+
+  useEffect(() => {
+    if (conversationId && messages.length == 0) {
+      setIsCreateNew(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId]);
 
   return (
     <div className="w-full h-full flex flex-col border border-divider rounded-xl pb-3 text-small text-default-400">
       <HeaderConversation />
-      <div className="px-6 flex flex-col gap-3 justify-center items-center flex-1 overflow-hidden">
+      <div className="px-6 flex flex-col gap-6 justify-center items-center flex-1 overflow-hidden">
+        <div></div>
         {conversationId || messages.length ? (
           isConversationDetailLoading && !isCreateNew ? (
             <Spinner className="flex items-center justify-center w-full h-full" size="lg" color="warning"></Spinner>
@@ -77,43 +88,45 @@ export default function ConversationDetail() {
           // <ConversationMessageList />
           <NewConversation manageFilterModal={manageFilterModal} />
         )}
-        <ConversationInput
-          disabled={createConversationMutation.isPending || createMessageConversationMutation.isPending}
-          onSubmit={(message, clearMessage) => {
-            if (conversationId) {
-              createMessageConversationMutation.mutate({ conversationId, message });
-              setMessages([
-                ...messages,
-                {
-                  content: message,
-                  id: uuidv4(),
-                  metadata: '',
-                  conversationId,
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                  createdBy: user!.id,
-                  updatedBy: user!.id,
-                },
-              ]);
-            } else {
-              createConversationMutation.mutate({});
-              setMessages([
-                {
-                  content: message,
-                  id: uuidv4(),
-                  metadata: '',
-                  conversationId: '',
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                  createdBy: user!.id,
-                  updatedBy: user!.id,
-                },
-              ]);
-            }
-            clearMessage();
-          }}
-        />
-        <p className="font-medium">HISVN AI có khả năng nhầm lẫn. Hãy kiểm tra kỹ thông tin.</p>
+        <div className="flex flex-col gap-3 w-full items-center">
+          <ConversationInput
+            disabled={createConversationMutation.isPending || createMessageConversationMutation.isPending}
+            onSubmit={(message, clearMessage) => {
+              if (conversationId) {
+                createMessageConversationMutation.mutate({ conversationId, message });
+                setMessages([
+                  ...messages,
+                  {
+                    content: message,
+                    id: uuidv4(),
+                    metadata: '',
+                    conversationId,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    createdBy: user!.id,
+                    updatedBy: user!.id,
+                  },
+                ]);
+              } else {
+                createConversationMutation.mutate({});
+                setMessages([
+                  {
+                    content: message,
+                    id: uuidv4(),
+                    metadata: '',
+                    conversationId: '',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    createdBy: user!.id,
+                    updatedBy: user!.id,
+                  },
+                ]);
+              }
+              clearMessage();
+            }}
+          />
+          <p className="font-medium">HISVN AI có khả năng nhầm lẫn. Hãy kiểm tra kỹ thông tin.</p>
+        </div>
       </div>
       <MessageFilterScopeModal state={manageFilterModal} />
     </div>
