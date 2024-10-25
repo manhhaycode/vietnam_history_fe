@@ -5,20 +5,32 @@ import { twMerge } from 'tailwind-merge';
 import { useAppStore } from '@/libs/store';
 import { CiSquareQuestion } from 'react-icons/ci';
 import { MdContentPaste } from 'react-icons/md';
+import Table from '../Table';
 
 export default function AdminDashboard() {
     const { isNavExpanded } = useAppStore();
 
-    const users = [
-        { id: 1, name: 'Alice Johnson', email: 'alice.johnson@gmail.com',role : 'Staff', status: 'Active' },
-        { id: 2, name: 'Bob Smith', email: 'bob.smith@gmail.com',role : 'User', status: 'Inactive' },
-        { id: 3, name: 'Charlie Davis', email: 'charlie.davis@gmail.com',role : 'User', status: 'Active' },
+    const columns = [
+        { header: 'ID', accessor: 'id' },
+        { header: 'Name', accessor: 'name' },
+        { header: 'Email', accessor: 'email' },
     ];
 
-    const deleteUser = (id: number) => {
-        console.log(`Delete user with id: ${id}`);
+    const data = [
+        { id: '1', name: 'John Doe', email: 'johndoe@example.com' },
+        { id: '2', name: 'Jane Smith', email: 'janesmith@example.com' },
+        { id: '3', name: 'Alice Johnson', email: 'alice@example.com' },
+    ];
+
+    const handleEdit = (id: string) => {
+        console.log(`Editing user with id: ${id}`);
     };
 
+    const handleDelete = (id: string) => {
+        console.log(`Deleting user with id: ${id}`);
+    };
+
+    //Layouts 
     return (
         <div className="flex h-[calc(100dvh)] py-4">
 
@@ -51,46 +63,10 @@ export default function AdminDashboard() {
             <div className="flex-1 px-4">
                 <h2 className="text-xl font-bold mb-4">Admin Dashboard</h2>
 
-
-                <div className="overflow-auto">
-                    <table className="min-w-full bg-white border border-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                    User Name
-                                </th>
-                                <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                    Email
-                                </th>
-                                <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                    Role
-                                </th>
-                                <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user) => (
-                                <tr key={user.id}>
-                                    
-                                    <td className="px-6 py-4 border-b bg-[#18181B]">{user.name}</td>
-                                    <td className="px-6 py-4 border-b bg-[#18181B]">{user.email}</td>
-                                    <td className="px-6 py-4 border-b bg-[#18181B]">{user.role}</td>
-                                    <td className="px-6 py-4 border-b bg-[#18181B]">{user.status}</td>
-                                    <td className="px-6 py-4 border-b bg-[#18181B]">
-                                        <Button size="sm" color="danger" onClick={() => deleteUser(user.id)}>
-                                            Delete
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="p-4">
+                    <Table columns={columns} data={data} onEdit={handleEdit} onDelete={handleDelete} />
                 </div>
+
             </div>
         </div>
     );
