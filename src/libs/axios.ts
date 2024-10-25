@@ -25,7 +25,7 @@ httpRequest.interceptors.response.use(undefined, async (error: AxiosError) => {
   if (error.response) {
     if (error.response.status === 401 || error.response.status === 403) {
       // remove all cookies, set auth state to null
-      useAuthStore.setState({ user: null });
+      useAuthStore.getState().setUser(null);
     }
     return Promise.reject(error.response.data);
   } else {

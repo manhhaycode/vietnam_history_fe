@@ -26,8 +26,4 @@ console.warn = (...args) => {
 
 document.documentElement.classList.add('dark');
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+createRoot(document.getElementById('root')!).render(<App />);
