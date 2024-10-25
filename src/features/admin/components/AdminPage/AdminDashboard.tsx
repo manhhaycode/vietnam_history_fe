@@ -17,15 +17,15 @@ export default function AdminDashboard() {
     const [selectedUser, setSelectedUser] = useState<{ id: string, name: string, email: string } | null>(null);
 
     const columns = [
-        { header: 'ID', accessor: 'id' },
-        { header: 'Name', accessor: 'name' },
-        { header: 'Email', accessor: 'email' },
-    ];
-
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'email', label: 'Email' },
+      ];
+      
     const data = [
-        { id: '1', name: 'John Doe', email: 'johndoe@example.com' },
-        { id: '2', name: 'Jane Smith', email: 'janesmith@example.com' },
-        { id: '3', name: 'Alice Johnson', email: 'alice@example.com' },
+        { id: '1', name: 'John Doe', email: 'johndoe@gmail.com' },
+        { id: '2', name: 'Jane Smith', email: 'janesmith@gmail.com' },
+        { id: '3', name: 'Alice Johnson', email: 'alice@gmail.com' },
     ];
 
    

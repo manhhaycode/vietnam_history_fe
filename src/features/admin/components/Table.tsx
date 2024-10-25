@@ -1,62 +1,53 @@
-
-import React from 'react';
-interface Column {
-  header: string;
-  accessor: string;
+export interface Column {
+  key: string; 
+  label: string; 
 }
+
 interface TableProps {
   columns: Column[];
-  data: any[];
-  onDelete?: (id: string) => void;
-  onEdit?: (id: string) => void;
+  data: Array<{ [key: string]: any; id: string }>;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
-const Table: React.FC<TableProps> = ({ columns, data, onDelete, onEdit }) => {
+
+export default function Table({ columns, data, onEdit, onDelete }: TableProps) {
   return (
-    <div className="overflow-x-auto w-full">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
-          <tr className="bg-red-200">
-            {columns.map((column, index) => (
-              <th key={index} className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                {column.header}
-              </th>
-            ))}
-            {(onEdit || onDelete) && <th className="px-6 py-3 border-b-2 border-gray-200"></th>}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="hover:bg-gray-100">
-              {columns.map((column, colIndex) => (
-                <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b">
-                  {row[column.accessor]}
-                </td>
-              ))}
-              {(onEdit || onDelete) && (
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-b">
-                  {onEdit && (
-                    <button
-                      onClick={() => onEdit(row.id)}
-                      className="text-indigo-600 hover:text-indigo-900 mr-2"
-                    >
-                      Edit
-                    </button>
-                  )}
-                  {onDelete && (
-                    <button
-                      onClick={() => onDelete(row.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
-                  )}
-                </td>
-              )}
-            </tr>
+    <table className="min-w-full table-auto border-collapse border border-gray-300 bg-white">
+      <thead>
+        <tr>
+          {columns.map((column) => (
+            <th key={column.key} className="border px-4 py-2 text-gray-800">
+              {column.label}
+            </th>
           ))}
-        </tbody>
-      </table>
-    </div>
+          <th className="border px-4 py-2 text-gray-800">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row) => (
+          <tr key={row.id} className="border">
+            {columns.map((column) => (
+              <td key={column.key} className="border px-4 py-2 text-gray-800">
+                {row[column.key]}
+              </td>
+            ))}
+            <td className="border px-4 py-2">
+              <button
+                className="mr-2 bg-blue-500 text-white px-2 py-1"
+                onClick={() => onEdit(row.id)}
+              >
+                Edit
+              </button>
+              <button
+                className="bg-red-500 text-white px-2 py-1"
+                onClick={() => onDelete(row.id)}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
-};
-export default Table;
+}
