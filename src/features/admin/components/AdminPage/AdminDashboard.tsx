@@ -7,9 +7,15 @@ import { useAppStore } from '@/libs/store';
 import { CiSquareQuestion } from 'react-icons/ci';
 import { MdContentPaste } from 'react-icons/md';
 import Table from '../Table';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
     const { isNavExpanded } = useAppStore();
+     
+        const navigate = useNavigate(); 
+        const handleAddTopicClick = () => {
+            navigate('/admin/add-topic'); 
+        };
 
   
     const [isEditing, setIsEditing] = useState(false);
@@ -79,6 +85,7 @@ export default function AdminDashboard() {
                     <Button
                         className="bg-default-foreground text-default-50 h-12 w-full justify-start mt-2 mb-6 flex-none"
                         startContent={<MdContentPaste size={24} />}
+                        onClick={handleAddTopicClick}
                     >
                         Add New Topic
                     </Button>
