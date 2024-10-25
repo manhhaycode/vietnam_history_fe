@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import NavBar from '@/layouts/components/NavBar';
 import { Button } from '@nextui-org/react';
 import { AiOutlineUserAdd } from 'react-icons/ai';
@@ -9,6 +10,11 @@ import Table from '../Table';
 
 export default function AdminDashboard() {
     const { isNavExpanded } = useAppStore();
+
+  
+    const [isEditing, setIsEditing] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<{ id: string, name: string, email: string } | null>(null);
 
     const columns = [
         { header: 'ID', accessor: 'id' },
@@ -22,18 +28,40 @@ export default function AdminDashboard() {
         { id: '3', name: 'Alice Johnson', email: 'alice@example.com' },
     ];
 
+   
     const handleEdit = (id: string) => {
-        console.log(`Editing user with id: ${id}`);
+        const user = data.find((user) => user.id === id);
+        if (user) {
+            setSelectedUser(user);
+            setIsEditing(true);  
+        }
     };
+
 
     const handleDelete = (id: string) => {
-        console.log(`Deleting user with id: ${id}`);
+        const user = data.find((user) => user.id === id);
+        if (user) {
+            setSelectedUser(user);
+            setIsDeleting(true);  
+        }
     };
 
-    //Layouts 
+   
+    const handleEditSubmit = (updatedUser: any) => {
+        console.log('Updated User Data:', updatedUser);
+        setIsEditing(false);  
+    };
+
+   
+    const handleDeleteConfirm = () => {
+        if (selectedUser) {
+            console.log(`Deleting user with id: ${selectedUser.id}`);
+            setIsDeleting(false); 
+        }
+    };
+
     return (
         <div className="flex h-[calc(100dvh)] py-4">
-
             <div className={twMerge('h-full transition-size overflow-x-hidden', isNavExpanded ? 'w-72' : 'w-0')}>
                 <NavBar>
                     <Button
@@ -59,14 +87,58 @@ export default function AdminDashboard() {
                 </NavBar>
             </div>
 
-
             <div className="flex-1 px-4">
                 <h2 className="text-xl font-bold mb-4">Admin Dashboard</h2>
 
                 <div className="p-4">
-                    <Table columns={columns} data={data} onEdit={handleEdit} onDelete={handleDelete} />
-                </div>
+                    <Table
+                        columns={columns}
+                        data={data}
+                        onEdit={(id: string) => handleEdit(id)}
+                        onDelete={(id: string) => handleDelete(id)}
+                    />
 
+                    {/* Edit Form */}
+                    {isEditing && selectedUser && (
+                        <div className="mt-4 p-4 bg-gray-100 border border-gray-300">
+                            <h3 className="text-[color:#333]">Edit User</h3>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                handleEditSubmit(selectedUser);
+                            }}>
+                                <div className="mb-4">
+                                    <label className="text-[color:#333]">Name:</label>
+                                    <input
+                                        type="text"
+                                        value={selectedUser.name}
+                                        onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+                                        className="w-full p-2 border"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="text-[color:#333]">Email:</label>
+                                    <input
+                                        type="email"
+                                        value={selectedUser.email}
+                                        onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+                                        className="w-full p-2 border"
+                                    />
+                                </div>
+                                <Button type="submit">Save</Button>
+                                <Button onClick={() => setIsEditing(false)} className="ml-2" color="danger">Cancel</Button>
+                            </form>
+                        </div>
+                    )}
+
+                    {/* Delete Confirm */}
+                    {isDeleting && selectedUser && (
+                        <div className="mt-4 p-4 bg-red-100 border border-red-300">
+                            <h3 className="text-[color:#333]">Are you sure you want to delete {selectedUser.name}?</h3>
+                            <Button onClick={handleDeleteConfirm} color="danger">Confirm Delete</Button>
+                            <Button onClick={() => setIsDeleting(false)} className="ml-2">Cancel</Button>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
