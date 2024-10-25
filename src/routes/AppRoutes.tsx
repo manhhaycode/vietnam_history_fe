@@ -1,6 +1,7 @@
 import Error from '@/components/Error';
 import { AdminDashboard } from '@/features/admin';
-import AddTopic from '@/features/admin/components/TopicPage/AddTopic';
+import AddTopic from '@/features/admin/components/AddTopicPage/AddTopic';
+import TopicsPage from '@/features/admin/components/TopicPage';
 import { GoogleOAuthCallbackPage, LoginPage } from '@/features/auth';
 import ConversationPage from '@/features/conversations/routes/ConversationPage';
 import { WithAuthencation } from '@/hoocs';
@@ -14,6 +15,8 @@ export default function AppRoutes() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/conversations/:conversationId" element={<ConversationPage />} />
         <Route path="/admin/add-topic" element={<AddTopic />} />
+        <Route path="/admin/topics" element={<TopicsPage />} />
+
 
       </Route>
       <Route path="auth/google/callback" element={<GoogleOAuthCallbackPage />} />

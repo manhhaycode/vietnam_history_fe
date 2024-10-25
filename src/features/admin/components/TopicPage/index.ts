@@ -1,3 +1,3 @@
-import AdminAddTopic from "./AddTopic";
+import TopicsPage from "./TopicsPage";
 
-export default AdminAddTopic;
+export default TopicsPage;

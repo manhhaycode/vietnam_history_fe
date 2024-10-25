@@ -5,6 +5,7 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import { twMerge } from 'tailwind-merge';
 import { useAppStore } from '@/libs/store';
 import { CiSquareQuestion } from 'react-icons/ci';
+import { CiEdit } from "react-icons/ci";
 import { MdContentPaste } from 'react-icons/md';
 import Table from '../Table';
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +14,12 @@ export default function AdminDashboard() {
     const { isNavExpanded } = useAppStore();
      
         const navigate = useNavigate(); 
+        
         const handleAddTopicClick = () => {
             navigate('/admin/add-topic'); 
+        };
+        const handleViewTopicClick = () => {
+            navigate('/admin/topics');
         };
 
   
@@ -84,10 +89,17 @@ export default function AdminDashboard() {
                     </Button>
                     <Button
                         className="bg-default-foreground text-default-50 h-12 w-full justify-start mt-2 mb-6 flex-none"
-                        startContent={<MdContentPaste size={24} />}
+                        startContent={<CiEdit size = {24}/>}
                         onClick={handleAddTopicClick}
                     >
                         Add New Topic
+                    </Button>
+                    <Button
+                        className="bg-default-foreground text-default-50 h-12 w-full justify-start mt-2 mb-6 flex-none"
+                        startContent={<MdContentPaste size={24} />}
+                        onClick={handleViewTopicClick}
+                    >
+                        View all topics
                     </Button>
 
                     <p className="px-4 py-3 text-small text-default-400">User Management</p>
