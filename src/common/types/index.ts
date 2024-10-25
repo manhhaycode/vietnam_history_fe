@@ -1,8 +1,13 @@
-export default interface CommonModel {
-  createAt: string;
-  updateAt: string;
-  createBy: string;
-  updateBy: string;
+export interface IResponse {
+  code: number;
+  message: string;
+}
+
+export interface CommonModel {
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
 }
 
 export interface IPagination<T> {

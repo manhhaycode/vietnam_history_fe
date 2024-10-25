@@ -1,4 +1,4 @@
-import CommonModel from '@/common/types';
+import { CommonModel, IResponse } from '@/common/types';
 
 export interface IConversation extends CommonModel {
   id: string;
@@ -8,13 +8,42 @@ export interface IConversation extends CommonModel {
   messages: IMessage[];
 }
 
+export type IConversationItem = Omit<IConversation, 'messages'>;
+
 export interface IMessage extends CommonModel {
   id: string;
   content: string;
   metadata: string;
+  conversationId?: string;
 }
 
 export interface IConversationFilter {
   name?: string;
   metadata?: string;
+}
+
+export interface IConversationListRes extends IResponse {
+  conversations: IConversationItem[];
+}
+
+export interface IFilterScope {
+  topic: string;
+  era: string;
+  artifact: string;
+  place: string;
+  figure: string;
+}
+
+export interface ICreateConversationRes extends IResponse {
+  conversation: IConversation;
+}
+
+export interface IConversationMessagesRes extends IResponse {
+  messages: IMessage[];
+}
+
+export interface IConversationCreateMessageRes extends IResponse {
+  result: {
+    count: number;
+  };
 }
