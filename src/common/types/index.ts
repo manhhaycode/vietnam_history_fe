@@ -15,6 +15,7 @@ export interface IPagination<T> {
   size: number;
   totalPage: number;
   data: T[];
+  total: number;
 }
 
 export interface IPaginationFilter<T> {
@@ -35,7 +36,7 @@ export interface TableHeaderItem {
   label: string;
   key: string;
   sortable?: boolean;
-  width?: number;
+  minWidth?: number;
   render?: (text: any, record: any, index: number) => JSX.Element;
 }
 

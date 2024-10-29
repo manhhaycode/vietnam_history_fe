@@ -1,43 +1,68 @@
-import { Button, Chip, Input } from '@nextui-org/react';
-import { IoIosSearch } from 'react-icons/io';
+import { Button, Chip, useDisclosure } from '@nextui-org/react';
 import { MdAddCircle } from 'react-icons/md';
-import { TbAdjustmentsHorizontal, TbSortAscending } from 'react-icons/tb';
 import TopicTable from '../components/TopicTable';
+import { useState } from 'react';
+import UpsertTopicModal from '../components/UpsertTopicModal/UpsertTopicModal';
+import { ITopic } from '../types';
+import { useCreateTopicMutation, useUpdateTopicMutation } from '../api';
+import toast from 'react-hot-toast';
+import queryClient from '@/libs/tanstack-query';
 
 export default function ManageTopic() {
+  const upsertTopicModalState = useDisclosure({ defaultOpen: false });
+  const [topic, setTopic] = useState<ITopic | null>(null);
+  const [total, setTotal] = useState<number | null>(null);
+  const useUpdateTopic = useUpdateTopicMutation({
+    onSuccess: () => {
+      upsertTopicModalState.onClose();
+      toast.success('Cập nhật chủ đề thành công');
+      queryClient.invalidateQueries({ queryKey: ['topics'] });
+    },
+  });
+  const useCreateTopic = useCreateTopicMutation({
+    onSuccess: async () => {
+      upsertTopicModalState.onClose();
+      toast.success('Tạo chủ đề thành công');
+      queryClient.invalidateQueries({ queryKey: ['topics'] });
+    },
+  });
+
   return (
     <div className="flex flex-col gap-y-6 py-6 px-4">
       <div className="flex items-center justify-between">
         <div className="flex gap-3 items-center">
           <h1 className="text-2xl font-[700] leading-[32px]">Danh sách chủ đề</h1>
-          <Chip>100</Chip>
+          {total !== null && <Chip>{total}</Chip>}
         </div>
-        <Button color="primary" endContent={<MdAddCircle size={20} />}>
+        <Button
+          onClick={() => {
+            setTopic(null);
+            upsertTopicModalState.onOpen();
+          }}
+          color="primary"
+          endContent={<MdAddCircle size={20} />}
+        >
           Thêm chủ đề
         </Button>
       </div>
-      <div className="flex items-end gap-3">
-        <Input
-          className="w-fit"
-          placeholder="Tìm kiếm chủ đề"
-          endContent={<IoIosSearch size={16} className="text-default-400" />}
-        />
-        <Button
-          size="sm"
-          className="bg-default-100 text-default-800"
-          startContent={<TbAdjustmentsHorizontal size={16} className="text-default-400" />}
-        >
-          Filter
-        </Button>
-        <Button
-          size="sm"
-          className="bg-default-100 text-default-800"
-          startContent={<TbSortAscending size={16} className="text-default-400" />}
-        >
-          Sort
-        </Button>
-      </div>
-      <TopicTable />
+      <TopicTable
+        onChangeData={(data) => setTotal(data.total)}
+        onEdit={(data) => {
+          setTopic(data);
+          upsertTopicModalState.onOpen();
+        }}
+      />
+      <UpsertTopicModal
+        data={topic}
+        state={upsertTopicModalState}
+        onSubmitForm={(data, isEdit) => {
+          if (isEdit) {
+            if (!useUpdateTopic.isPending) useUpdateTopic.mutate({ id: data.id, data });
+          } else {
+            if (!useCreateTopic.isPending) useCreateTopic.mutate(data);
+          }
+        }}
+      />
     </div>
   );
 }

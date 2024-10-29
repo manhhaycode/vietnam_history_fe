@@ -5,7 +5,7 @@ export default function AdminLayout() {
   return (
     <div className="flex relative">
       <AdminNav />
-      <div className="flex-1 px-4 relative">
+      <div className="flex-1 px-4 relative overflow-x-hidden">
         <Outlet />
       </div>
     </div>
