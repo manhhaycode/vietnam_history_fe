@@ -22,7 +22,7 @@ export default function UpsertTopicModal({
   data: ITopic | null;
   onSubmitForm?: (data: ITopic, isEdit: boolean) => void;
 }) {
-  const { handleSubmit, register, reset } = useForm<ITopic>({ defaultValues: {} });
+  const { handleSubmit, register, reset } = useForm<ITopic>({ defaultValues: { status: ETopicStatus.PUBLISHED } });
 
   const onSubmit = handleSubmit((dataSubmit) => {
     if (onSubmitForm) onSubmitForm(dataSubmit, !!data);
@@ -53,7 +53,7 @@ export default function UpsertTopicModal({
                   <Select
                     label="Trạng thái"
                     {...register('status')}
-                    {...(data?.status && { defaultSelectedKeys: [data.status] })}
+                    defaultSelectedKeys={[data?.status ?? ETopicStatus.PUBLISHED]}
                   >
                     {Object.keys(ETopicStatus).map((option) => (
                       <SelectItem key={option} value={option}>

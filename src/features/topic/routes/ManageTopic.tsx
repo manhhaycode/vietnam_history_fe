@@ -4,7 +4,7 @@ import TopicTable from '../components/TopicTable';
 import { useState } from 'react';
 import UpsertTopicModal from '../components/UpsertTopicModal/UpsertTopicModal';
 import { ITopic } from '../types';
-import { useCreateTopicMutation, useUpdateTopicMutation } from '../api';
+import { useCreateTopicMutation, useDeleteTopicMuatation, useUpdateTopicMutation } from '../api';
 import toast from 'react-hot-toast';
 import queryClient from '@/libs/tanstack-query';
 
@@ -26,6 +26,7 @@ export default function ManageTopic() {
       queryClient.invalidateQueries({ queryKey: ['topics'] });
     },
   });
+  const useDeleteTopic = useDeleteTopicMuatation();
 
   return (
     <div className="flex flex-col gap-y-6 py-6 px-4">
@@ -50,6 +51,18 @@ export default function ManageTopic() {
         onEdit={(data) => {
           setTopic(data);
           upsertTopicModalState.onOpen();
+        }}
+        onDelete={async (ids) => {
+          if (!useDeleteTopic.isPending) {
+            try {
+              await Promise.all(ids.map((id) => useDeleteTopic.mutateAsync(id)));
+              queryClient.invalidateQueries({ queryKey: ['topics'] });
+              toast.success('Xóa chủ đề thành công');
+            } catch {
+              queryClient.invalidateQueries({ queryKey: ['topics'] });
+              toast.error('Có lỗi xảy ra trong quá trình xóa chủ đề');
+            }
+          }
         }}
       />
       <UpsertTopicModal

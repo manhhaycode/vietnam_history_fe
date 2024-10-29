@@ -8,6 +8,7 @@ import {
   Select,
   Selection,
   SelectItem,
+  SortDescriptor,
   Spinner,
   Table,
   TableBody,
@@ -31,7 +32,7 @@ const statusColorMap: Record<ETopicStatus, NextUIColor> = {
 };
 export default function TopicTable({
   onChangeData,
-  // onDelete,
+  onDelete,
   onEdit,
 }: {
   onChangeData?: (data: IPagination<ITopic>) => void;
@@ -43,6 +44,8 @@ export default function TopicTable({
   const [filter, setFilter] = useState<Partial<ITopic>>({
     name: '',
   });
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>();
+
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set<string>([]));
   const columns: TableHeaderItem[] = useMemo(
     () => [
@@ -53,7 +56,13 @@ export default function TopicTable({
     ],
     [],
   );
-  const { data: topics, isFetching } = useGetTopics({ page, pageSize, filter });
+  const { data: topics, isFetching } = useGetTopics({
+    page,
+    pageSize,
+    filter,
+    sortOrder: sortDescriptor?.direction === 'ascending' ? 'asc' : 'desc',
+    sortBy: sortDescriptor?.column as string,
+  });
 
   useEffect(() => {
     if (onChangeData && topics) {
@@ -112,7 +121,7 @@ export default function TopicTable({
                 color="danger"
                 startContent={<RiDeleteBinLine size={16} />}
                 onClick={() => {
-                  console.log(selectedKeys);
+                  onDelete?.([...selectedKeys] as string[]);
                 }}
               />
             </div>
@@ -121,7 +130,7 @@ export default function TopicTable({
           return cellValue;
       }
     },
-    [onEdit, selectedKeys],
+    [onDelete, onEdit, selectedKeys],
   );
 
   return (
@@ -175,8 +184,9 @@ export default function TopicTable({
         classNames={{ wrapper: 'max-h-[calc(100vh-200px)]' }}
         selectionMode="multiple"
         selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-        onSortChange={() => {}}
+        onSelectionChange={(keys) => keys instanceof Set && setSelectedKeys(keys)}
+        sortDescriptor={sortDescriptor}
+        onSortChange={setSortDescriptor}
         aria-label="Example table with dynamic content"
         bottomContent={
           topics && topics?.totalPage > 0 ? (
