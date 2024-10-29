@@ -51,14 +51,14 @@ export default function EventTable({
   const columns: TableHeaderItem[] = useMemo(
     () => [
       { key: 'name', label: 'Name', sortable: true },
-      { key: 'description', label: 'Description' },
+      { key: 'brief', label: 'Brief' },
       { key: 'status', label: 'Status' },
       { key: 'actions', label: 'Actions' },
     ],
     [],
   );
 
-  const { data: events, isFetching } = useGetEvents({ // Updated query
+  const { data: events, isFetching } = useGetEvents({ 
     page,
     pageSize,
     filter,

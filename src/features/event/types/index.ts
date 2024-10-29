@@ -6,8 +6,8 @@ export interface IEvent extends CommonModel {
   brief: string;
   content: string;
   location: string;
-  startDate: string; // ISO date string
-  endDate: string;   // ISO date string
+  startDate: string; 
+  endDate: string;   
   status: EEventStatus;
 }
 

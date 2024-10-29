@@ -1,45 +1,45 @@
 import { Button, Chip, useDisclosure } from '@nextui-org/react';
 import { MdAddCircle } from 'react-icons/md';
-import EventTable from '../components/EventTable'; // Updated
+import EventTable from '../components/EventTable'; 
 import { useState } from 'react';
-import UpsertEventModal from '../components/UpsertEventModal/UpsertEventModal'; // Updated
-import { IEvent } from '../types'; // Updated type
+import UpsertEventModal from '../components/UpsertEventModal/UpsertEventModal'; 
+import { IEvent } from '../types'; 
 import { 
   useCreateEventMutation, 
   useDeleteEventMutation, 
   useUpdateEventMutation 
-} from '../api'; // Updated mutations
+} from '../api'; 
 import toast from 'react-hot-toast';
 import queryClient from '@/libs/tanstack-query';
 
-export default function ManageEvent() { // Updated component name
+export default function ManageEvent() { 
   const upsertEventModalState = useDisclosure({ defaultOpen: false });
-  const [event, setEvent] = useState<IEvent | null>(null); // Updated state
+  const [event, setEvent] = useState<IEvent | null>(null); 
   const [total, setTotal] = useState<number | null>(null);
 
   const useUpdateEvent = useUpdateEventMutation({
     onSuccess: () => {
       upsertEventModalState.onClose();
-      toast.success('Cập nhật sự kiện thành công'); // Updated message
-      queryClient.invalidateQueries({ queryKey: ['events'] }); // Updated query key
+      toast.success('Cập nhật sự kiện thành công'); 
+      queryClient.invalidateQueries({ queryKey: ['events'] }); 
     },
   });
 
   const useCreateEvent = useCreateEventMutation({
     onSuccess: async () => {
       upsertEventModalState.onClose();
-      toast.success('Tạo sự kiện thành công'); // Updated message
-      queryClient.invalidateQueries({ queryKey: ['events'] }); // Updated query key
+      toast.success('Tạo sự kiện thành công');
+      queryClient.invalidateQueries({ queryKey: ['events'] }); 
     },
   });
 
-  const useDeleteEvent = useDeleteEventMutation(); // Updated mutation
+  const useDeleteEvent = useDeleteEventMutation(); 
 
   return (
     <div className="flex flex-col gap-y-6 py-6 px-4">
       <div className="flex items-center justify-between">
         <div className="flex gap-3 items-center">
-          <h1 className="text-2xl font-[700] leading-[32px]">Danh sách sự kiện</h1> {/* Updated text */}
+          <h1 className="text-2xl font-[700] leading-[32px]">Danh sách sự kiện</h1> 
           {total !== null && <Chip>{total}</Chip>}
         </div>
         <Button
@@ -55,27 +55,27 @@ export default function ManageEvent() { // Updated component name
       </div>
 
       <EventTable
-        onChangeData={(data) => setTotal(data.total)} // Updated prop
+        onChangeData={(data) => setTotal(data.total)} 
         onEdit={(data) => {
-          setEvent(data); // Updated state setter
+          setEvent(data); 
           upsertEventModalState.onOpen();
         }}
         onDelete={async (ids) => {
           if (!useDeleteEvent.isPending) {
             try {
               await Promise.all(ids.map((id) => useDeleteEvent.mutateAsync(id)));
-              queryClient.invalidateQueries({ queryKey: ['events'] }); // Updated query key
-              toast.success('Xóa sự kiện thành công'); // Updated message
+              queryClient.invalidateQueries({ queryKey: ['events'] }); 
+              toast.success('Xóa sự kiện thành công'); 
             } catch {
-              queryClient.invalidateQueries({ queryKey: ['events'] }); // Updated query key
-              toast.error('Có lỗi xảy ra trong quá trình xóa sự kiện'); // Updated message
+              queryClient.invalidateQueries({ queryKey: ['events'] }); 
+              toast.error('Có lỗi xảy ra trong quá trình xóa sự kiện'); 
             }
           }
         }}
       />
 
       <UpsertEventModal
-        data={event} // Updated prop
+        data={event} 
         state={upsertEventModalState}
         onSubmitForm={(data, isEdit) => {
           if (isEdit) {

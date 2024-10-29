@@ -10,7 +10,7 @@ import {
     Textarea,
     useDisclosure,
   } from '@nextui-org/react';
-  import { EEventStatus, IEvent } from '@/features/event'; // Adjust path to event types
+  import { EEventStatus, IEvent } from '@/features/event'; 
   import { useForm } from 'react-hook-form';
   import { useEffect } from 'react';
   
