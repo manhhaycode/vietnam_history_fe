@@ -5,7 +5,7 @@ export interface Column {
 
 interface TableProps {
   columns: Column[];
-  data: Array<{ [key: string]: any; id: string }>;
+  data: Array<{ [key: string]: any; id: string }> ;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }

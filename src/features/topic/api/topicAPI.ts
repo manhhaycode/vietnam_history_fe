@@ -22,13 +22,37 @@ export interface TopicListResponse {
 }
 
 
-export const getTopics = async (): Promise<Topic[]> => {
+// export const getTopics = async (): Promise<Topic[]> => {
+//   try {
+//     const response: TopicListResponse = await httpRequest.get('/topics');
+//     return response.topics;
+//   } catch (error) {
+//     throw new Error(error as any);
+//   }
+// };
+
+// export const useGetTopics = (p0: string) => {
+//   return useQuery({
+//     queryKey: ['topics'],
+//     queryFn: getTopics,
+//   });
+// };
+
+export const getTopicById = async (id: string): Promise<Topic> => {
   try {
-    const response: TopicListResponse = await httpRequest.get('/topics');
-    return response.topics;
+    const response = await httpRequest.get(`/topics/${id}`);
+    return response; 
   } catch (error) {
     throw new Error(error as any);
   }
+};
+
+export const useGetTopicById = (id: string) => {
+  return useQuery<Topic, Error>({
+    queryKey: ['topic', id], 
+    queryFn: () => getTopicById(id), 
+    enabled: !!id, 
+  });
 };
 
 export const createTopic = async (topic: Partial<Topic>): Promise<TopicCreateResponse> => {
@@ -57,13 +81,6 @@ export const deleteTopic = async (id: string): Promise<void> => {
   }
 };
 
-
-export const useGetTopics = () => {
-  return useQuery({
-    queryKey: ['topics'],
-    queryFn: getTopics,
-  });
-};
 
 export const useCreateTopicMutation = (
   options?: UseMutationOptions<TopicCreateResponse, Error, Partial<Topic>>,

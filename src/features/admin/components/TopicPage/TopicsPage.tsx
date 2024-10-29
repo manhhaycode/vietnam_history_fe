@@ -1,4 +1,4 @@
-import { useGetTopics, useDeleteTopicMutation } from '@/features/topic/api/topicAPI';
+import { useGetTopicById as useGetTopicByIdFromTopicAPI, useDeleteTopicMutation } from '@/features/topic/api/topicAPI';
 import { useNavigate } from 'react-router-dom';
 import Table from '@/features/admin/components/Table';
 import NavBar from '@/layouts/components/NavBar';
@@ -11,7 +11,7 @@ import { useAppStore } from '@/libs/store';
 
 export default function TopicsPage() {
     const { isNavExpanded } = useAppStore();
-    const { data: topics, isLoading, isError } = useGetTopics();
+    const { data: topics, isLoading, isError } = useGetTopicById();
     const deleteTopicMutation = useDeleteTopicMutation();
     const navigate = useNavigate();
 
@@ -22,6 +22,7 @@ export default function TopicsPage() {
     const handleAddTopicClick = () => {
         navigate('/admin/add-topic');
     };
+    
 
     const handleViewTopicClick = () => {
         navigate('/admin/topics');
@@ -100,3 +101,7 @@ export default function TopicsPage() {
         </div>
     );
 }
+function useGetTopicById(): { data: any; isLoading: any; isError: any; } {
+    throw new Error('Function not implemented.');
+}
+
