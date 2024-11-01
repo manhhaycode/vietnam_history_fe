@@ -1,4 +1,5 @@
 import Error from '@/components/Error';
+import ManageArtifact from '@/features/artifacts/routes/ManageEvent';
 import { GoogleOAuthCallbackPage, LoginPage } from '@/features/auth';
 import ConversationPage from '@/features/conversations/routes/ConversationPage';
 import ManageEvent from '@/features/event/routes/ManageEvent';
@@ -21,6 +22,7 @@ export default function AppRoutes() {
           <Route path="manage-event" element={<ManageEvent />} />
           <Route path="manage-place" element={<ManagePlace />} />
           <Route path="manage-figure" element={<ManageFigure />} />
+          <Route path="manage-artifact" element={<ManageArtifact />} />
 
 
         </Route>
