@@ -56,6 +56,21 @@ export default function AdminNav() {
                 Manage Place
               </Link>
             </ListboxItem>
+            <ListboxItem
+              classNames={{
+                base: twMerge(
+                  'p-0 text-default-500 data-[popover=true]:transition-colors data-[popover=true]:bg-default data-[popover=true]:text-default-foreground ',
+                  location.pathname.includes('manage-figure') ? 'text-default-foreground bg-default' : '',
+                ),
+              }}
+              hideSelectedIcon={true}
+              key={'Manage figure'}
+              textValue={'Manage figure'}
+            >
+              <Link className="w-full p-3 block" to={`/admin/manage-figure`}>
+                Manage Figure
+              </Link>
+            </ListboxItem>
           </Listbox>
         </div>
       </NavBar>
