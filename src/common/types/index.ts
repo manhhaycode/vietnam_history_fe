@@ -4,17 +4,26 @@ export interface IResponse {
 }
 
 export interface CommonModel {
-  createAt: string;
-  updateAt: string;
-  createBy: string;
-  updateBy: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
 }
 
 export interface IPagination<T> {
-  page: number;
+  currentPage: number;
   size: number;
-  total: number;
+  totalPage: number;
   data: T[];
+  total: number;
+}
+
+export interface IPaginationFilter<T> {
+  page: number;
+  pageSize: number;
+  filter?: T;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface IFilter {
@@ -22,3 +31,13 @@ export interface IFilter {
   page?: number;
   size?: number;
 }
+
+export interface TableHeaderItem {
+  label: string;
+  key: string;
+  sortable?: boolean;
+  minWidth?: number;
+  render?: (text: any, record: any, index: number) => JSX.Element;
+}
+
+export type NextUIColor = 'success' | 'warning' | 'primary' | 'default' | 'secondary' | 'danger' | undefined;

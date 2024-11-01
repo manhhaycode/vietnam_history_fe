@@ -6,7 +6,7 @@ import { IoInformationCircleOutline } from 'react-icons/io5';
 import { TbLayoutSidebarRightExpand, TbSettings2 } from 'react-icons/tb';
 import { twMerge } from 'tailwind-merge';
 
-export default function NavBar({ children }: { children: React.ReactNode[] }) {
+export default function NavBar({ children }: { children: React.ReactNode[] | React.ReactNode }) {
   const { toggleNav } = useAppStore();
   return (
     <nav className={twMerge('flex flex-col flex-1 p-4 bg-[#18181B] h-full w-full transition-width')}>

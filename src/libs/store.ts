@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import { AppStore, AuthStore } from './store-type';
+import { AppStore, AuthStore, ConversationStore } from './store-type';
 import { IUser } from '@/features/user';
 import Cookies from 'js-cookie';
+import { IFilterScope, IMessage } from '@/features/conversations';
 
 export const useAppStore = create<AppStore>((set) => ({
   isNavExpanded: true,
@@ -22,4 +23,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
   login: (user: IUser) => set({ user }),
   logout: () => set({ user: null }),
+}));
+
+export const useConversationStore = create<ConversationStore>((set) => ({
+  filterScope: null,
+  messages: [],
+  setFilterScope: (filterScope: IFilterScope | null) => set({ filterScope }),
+  setMessages: (messages: IMessage[]) => set({ messages }),
 }));

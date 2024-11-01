@@ -1,5 +1,12 @@
 import * as httpRequest from '@/libs/axios';
-import { IConversation, IConversationItem, IConversationListRes } from '../types';
+import {
+  IConversation,
+  IConversationCreateMessageRes,
+  IConversationItem,
+  IConversationListRes,
+  IConversationMessagesRes,
+  ICreateConversationRes,
+} from '../types';
 import { useQuery, useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 export const getConversations = async (): Promise<IConversationItem[]> => {
@@ -20,7 +27,16 @@ export const getConversation = async (id: string): Promise<IConversation> => {
   }
 };
 
-export const createConversation = async (conversation: IConversation): Promise<IConversation> => {
+export const getConversationMessages = async (id: string): Promise<IConversationMessagesRes> => {
+  try {
+    const response = await httpRequest.get(`/conversations/chat/${id}`);
+    return response;
+  } catch (error) {
+    throw new Error(error as any);
+  }
+};
+
+export const createConversation = async (conversation: Partial<IConversation>): Promise<ICreateConversationRes> => {
   try {
     const response = await httpRequest.post('/conversations', conversation);
     return response;
@@ -46,6 +62,19 @@ export const deleteConversation = async (id: string): Promise<void> => {
   }
 };
 
+export const createMessageConversation = async (data: {
+  conversationId: string;
+  message: string;
+  metaData?: string;
+}): Promise<IConversationCreateMessageRes> => {
+  try {
+    const res = await httpRequest.post(`/conversations/chat`, data);
+    return res;
+  } catch (error) {
+    throw new Error(error as any);
+  }
+};
+
 export const useGetConversations = () => {
   return useQuery({
     queryKey: ['conversations'],
@@ -59,10 +88,22 @@ export const useGetConversation = (id?: string) => {
     queryKey: ['conversation', id],
     queryFn: () => getConversation(id!),
     enabled: !!id,
+    placeholderData: undefined,
   });
 };
 
-export const useCreateConversationMutation = (options?: UseMutationOptions<IConversation, Error, IConversation>) => {
+export const useGetConversationMessages = (id?: string, isEnable: boolean = true) => {
+  return useQuery({
+    queryKey: ['conversationMessages', id],
+    queryFn: () => getConversationMessages(id!),
+    enabled: !!id && isEnable,
+    placeholderData: undefined,
+  });
+};
+
+export const useCreateConversationMutation = (
+  options?: UseMutationOptions<ICreateConversationRes, Error, Partial<IConversation>>,
+) => {
   return useMutation({
     mutationKey: ['createConversation'],
     mutationFn: createConversation,
@@ -82,6 +123,20 @@ export const useDeleteConversationMutation = (options?: UseMutationOptions<void,
   return useMutation({
     mutationKey: ['deleteConversation'],
     mutationFn: deleteConversation,
+    ...options,
+  });
+};
+
+export const useCreateMessageConversationMutation = (
+  options?: UseMutationOptions<
+    IConversationCreateMessageRes,
+    Error,
+    { conversationId: string; message: string; metaData?: string }
+  >,
+) => {
+  return useMutation({
+    mutationKey: ['createMessageConversation'],
+    mutationFn: createMessageConversation,
     ...options,
   });
 };

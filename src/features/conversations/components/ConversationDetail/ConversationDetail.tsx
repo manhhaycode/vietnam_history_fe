@@ -1,95 +1,134 @@
-import { useState } from 'react';
-import Input from '../Input';
+import { useNavigate, useParams } from 'react-router-dom';
 import HeaderConversation from './HeaderConversation';
+import {
+  useCreateConversationMutation,
+  useCreateMessageConversationMutation,
+  useGetConversation,
+  useGetConversationMessages,
+} from '@/features/conversations';
+import { useEffect, useState } from 'react';
+import ConversationMessageList from '../ConversationMessage';
+import ConversationInput from '../ConversationInput';
+import NewConversation from '../NewConversation';
+import { Spinner, useDisclosure } from '@nextui-org/react';
+import MessageFilterScopeModal from '../MessageFilterScopeModal';
+import { useAuthStore, useConversationStore } from '@/libs/store';
+import { v4 as uuidv4 } from 'uuid';
+import queryClient from '@/libs/tanstack-query';
 
 export default function ConversationDetail() {
-  const [messages, setMessages] = useState<any[]>([]);
-  const [suggestions] = useState([
-    { icon: '📘', text: 'Study Italian vocabulary' },
-    { icon: '💌', text: 'Message inviting friend to wedding' },
-    { icon: '📅', text: 'Experience Buenos Aires like a local' },
-    { icon: '🎮', text: 'Design a fun Tetris game' },
-  ]);
+  const { conversationId } = useParams();
+  const { user } = useAuthStore();
+  const { messages, setMessages } = useConversationStore();
+  const navigate = useNavigate();
+  const [isCreateNew, setIsCreateNew] = useState(false);
+  const manageFilterModal = useDisclosure({ defaultOpen: false });
+  const createConversationMutation = useCreateConversationMutation({
+    onSuccess: async ({ conversation }) => {
+      setIsCreateNew(true);
+      await queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      navigate('/conversations/' + conversation.id);
+      setMessages([{ ...messages[0], conversationId: conversation.id }]);
+      createMessageConversationMutation.mutate({ conversationId: conversation.id, message: messages[0].content });
+    },
+    onError: () => {
+      console.log('onError');
+    },
+  });
+  const createMessageConversationMutation = useCreateMessageConversationMutation({
+    onSuccess: (data, variables) => {
+      if (isCreateNew) {
+        setIsCreateNew(false);
+      }
+      setMessages([
+        ...messages,
+        {
+          content: data.message,
+          id: uuidv4(),
+          metadata: '',
+          conversationId: variables.conversationId,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdBy: 'bot',
+          updatedBy: 'bot',
+        },
+      ]);
+    },
+    onError: () => {
+      console.log('onError');
+    },
+  });
+  const { isLoading: isConversationDetailLoading } = useGetConversation(conversationId);
+  const { data: conversationMessageList } = useGetConversationMessages(conversationId, !isCreateNew);
 
- 
-  const handleSendMessage = (message: string) => {
-    if (!message.trim()) return;
+  useEffect(() => {
+    setMessages(conversationMessageList?.messages ?? []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationMessageList]);
 
-    const userMessage = {
-      id: Date.now(),
-      content: message,
-      createBy: 'user',
-      avatar: 'https://static.znews.vn/static/topic/person/taylorswift.jpg', 
-    };
-
-
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-
-    setTimeout(() => {
-      const botReply = {
-        id: Date.now() + 1,
-        content: 'This is a sample response from HISVN AI.',
-        createBy: 'bot',
-        avatar:
-          'https://static.vecteezy.com/system/resources/previews/022/739/948/original/chatbot-robo-advisor-chat-bot-robot-like-assistant-concept-of-digital-advisor-avatar-to-help-the-customer-icon-vector.jpg', // Avatar bot
-      };
-      setMessages((prevMessages) => [...prevMessages, botReply]);
-    }, 1000);
-  };
+  useEffect(() => {
+    if (conversationId && messages.length == 0) {
+      setIsCreateNew(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId]);
 
   return (
-    <div className="w-full h-full flex flex-col border border-divider rounded-xl text-small text-default-400">
-     <HeaderConversation />
-      {messages.length === 0 && (
-        <div className="flex flex-col justify-center items-center flex-grow">
-          <div className="logo-container mb-6">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png"
-              alt="Logo"
-              className="w-12 h-12 mx-auto"
-            />
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            {suggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                className="px-6 py-8 rounded-lg flex flex-col items-center justify-between cursor-pointer hover:bg-gray-500"
-                onClick={() => handleSendMessage(suggestion.text)}
-                style={{ height: '120px', backgroundColor: '#4A4A4A' }}
-              >
-                <span className="text-3xl mb-2 flex-1 flex items-center justify-center">{suggestion.icon}</span>
-                <span className="text-center text-white flex-1 flex items-center justify-center">{suggestion.text}</span>
-              </div>
-            ))}
-          </div>
+    <div className="w-full h-full flex flex-col border border-divider rounded-xl pb-3 text-small text-default-400">
+      <HeaderConversation />
+      <div className="px-6 flex flex-col gap-6 justify-center items-center flex-1 overflow-hidden">
+        <div></div>
+        {conversationId || messages.length ? (
+          isConversationDetailLoading && !isCreateNew ? (
+            <Spinner className="flex items-center justify-center w-full h-full" size="lg" color="warning"></Spinner>
+          ) : (
+            <ConversationMessageList />
+          )
+        ) : (
+          // <ConversationMessageList />
+          <NewConversation manageFilterModal={manageFilterModal} />
+        )}
+        <div className="flex flex-col gap-3 w-full items-center">
+          <ConversationInput
+            disabled={createConversationMutation.isPending || createMessageConversationMutation.isPending}
+            onSubmit={(message, clearMessage) => {
+              if (conversationId) {
+                createMessageConversationMutation.mutate({ conversationId, message });
+                setMessages([
+                  ...messages,
+                  {
+                    content: message,
+                    id: uuidv4(),
+                    metadata: '',
+                    conversationId,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    createdBy: user!.id,
+                    updatedBy: user!.id,
+                  },
+                ]);
+              } else {
+                createConversationMutation.mutate({});
+                setMessages([
+                  {
+                    content: message,
+                    id: uuidv4(),
+                    metadata: '',
+                    conversationId: '',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    createdBy: user!.id,
+                    updatedBy: user!.id,
+                  },
+                ]);
+              }
+              clearMessage();
+            }}
+          />
+          <p className="font-medium">HISVN AI có khả năng nhầm lẫn. Hãy kiểm tra kỹ thông tin.</p>
         </div>
-      )}
-
-     
-      <div className="flex-grow overflow-y-auto px-4 py-2">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`my-4 flex items-start ${
-              msg.createBy === 'user' ? 'flex-row-reverse' : 'flex-row'
-            }`}
-          >
-            <img src={msg.avatar} alt={`${msg.createBy} avatar`} className="w-10 h-10 rounded-full mx-4" />
-            <div
-              className={`p-4 rounded-lg max-w-xl ${
-                msg.createBy === 'user' ? 'bg-gray-600 text-white self-end' : 'bg-gray-700 text-white self-start'
-              }`}
-              style={{ backgroundColor: msg.createBy === 'user' ? '#343541' : '#444654' }}
-            >
-              <strong>{msg.createBy === 'user' ? 'You' : 'AcmeAI'}</strong>
-              <div>{msg.content}</div>
-            </div>
-          </div>
-        ))}
       </div>
-
-      <Input onSendMessage={handleSendMessage} />
-     
+      <MessageFilterScopeModal state={manageFilterModal} />
     </div>
   );
 }

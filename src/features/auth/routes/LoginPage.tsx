@@ -21,11 +21,18 @@ export default function LoginPage() {
         verifyTokenMutation.mutate(data.localToken);
         window.removeEventListener('message', handleMessage);
       };
-      console.log(data.url);
-      popupWindow(data.url, 'Google Auth', 500, 600);
+      const popup = popupWindow(data.url, 'Google Auth', 500, 600);
       setIsPopupOpen(true);
       // when receive message from popup then verify token
       window.addEventListener('message', handleMessage);
+      // check if the popup is closed
+      const checkPopup = setInterval(() => {
+        if (popup?.closed) {
+          setIsPopupOpen(false);
+          window.removeEventListener('message', handleMessage);
+          clearInterval(checkPopup);
+        }
+      }, 1000);
     },
     onError: () => {
       toast.error('Something went wrong. Please try again.');
@@ -79,7 +86,7 @@ export default function LoginPage() {
             <p className="text-small text-default-500">Log in to your account to continue</p>
             <Divider className="my-6" />
             <Button
-              disabled={
+              isLoading={
                 loginGoogleMutation.isPending ||
                 isPopupOpen ||
                 verifyTokenMutation.isPending ||

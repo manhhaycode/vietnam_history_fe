@@ -7,19 +7,14 @@ import Cookies from 'js-cookie';
 export default function WithAuthencation() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const rt = Cookies.get('vn-history-rt');
+  const at = Cookies.get('vn-history-at');
 
   useEffect(() => {
-    const rt = Cookies.get('vn-history-rt');
-    const at = Cookies.get('vn-history-at');
-    if (!at) {
-      if (rt) {
-        navigate('/login');
-      } else {
-        sessionStorage.removeItem('tattus-session');
-        navigate('/login');
-      }
+    if (!at || !rt) {
+      navigate('/login');
     }
-  }, [navigate, user]);
+  }, [navigate, user, at, rt]);
 
-  return <Outlet />;
+  return rt && at && <Outlet />;
 }

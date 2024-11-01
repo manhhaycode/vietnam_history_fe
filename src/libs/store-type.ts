@@ -1,3 +1,4 @@
+import { IFilterScope, IMessage } from '@/features/conversations';
 import { IUser } from '@/features/user';
 
 export interface AppStore {
@@ -13,4 +14,11 @@ export interface AuthStore {
   setUser: (user: IUser | null) => void;
   login: (user: IUser) => void;
   logout: () => void;
+}
+
+export interface ConversationStore {
+  filterScope: IFilterScope | null;
+  messages: IMessage[];
+  setMessages: (messages: IMessage[]) => void;
+  setFilterScope: (filterScope: IFilterScope | null) => void;
 }
