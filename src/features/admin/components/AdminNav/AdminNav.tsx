@@ -65,7 +65,7 @@ export default function AdminNav() {
               }}
               hideSelectedIcon={true}
               key={'Manage figure'}
-              textValue={'Manage figure'}
+              textValue={'Manage Figure'}
             >
               <Link className="w-full p-3 block" to={`/admin/manage-figure`}>
                 Manage Figure
