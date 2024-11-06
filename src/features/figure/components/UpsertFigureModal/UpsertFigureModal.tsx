@@ -10,9 +10,10 @@ import {
   Textarea,
   useDisclosure,
 } from '@nextui-org/react';
-import { EFigureStatus, IFigure } from '@/features/figure'; 
+import { EFigureStatus, IFigure } from '@/features/figure';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
+import dayjs from 'dayjs';
 
 export default function UpsertFigureModal({
   state,
@@ -28,12 +29,25 @@ export default function UpsertFigureModal({
   });
 
   const onSubmit = handleSubmit((dataSubmit) => {
-    if (onSubmitForm) onSubmitForm(dataSubmit, !!data);
+    if (onSubmitForm)
+      onSubmitForm(
+        {
+          ...dataSubmit,
+          birthDate: dayjs(dataSubmit.birthDate).toISOString(),
+          deathDate: dayjs(dataSubmit.deathDate).toISOString(),
+        },
+        !!data,
+      );
   });
 
   useEffect(() => {
     if (state.isOpen) {
-      if (data) reset(data);
+      if (data)
+        reset({
+          ...data,
+          birthDate: dayjs(data.birthDate).format('YYYY-MM-DD'),
+          deathDate: dayjs(data.deathDate).format('YYYY-MM-DD'),
+        });
       else setTimeout(() => reset(), 0);
     }
   }, [state.isOpen, data, reset]);
@@ -43,16 +57,14 @@ export default function UpsertFigureModal({
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              {data ? 'Cập nhật nhân vật' : 'Tạo nhân vật mới'}
-            </ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">{data ? 'Cập nhật nhân vật' : 'Tạo nhân vật mới'}</ModalHeader>
             <ModalBody>
               <form onSubmit={onSubmit}>
                 <div className="grid grid-cols-1 gap-4">
                   <Input label="Tên nhân vật" {...register('name')} defaultValue={data?.name} />
                   <Textarea label="Tiểu sử" {...register('biography')} defaultValue={data?.biography} />
-                  <Input label="Ngày sinh" type="date" {...register('birthDate')} />
-                  <Input label="Ngày mất" type="date" {...register('deathDate')} />
+                  <Input label="Ngày sinh" {...register('birthDate')} />
+                  <Input label="Ngày mất" {...register('deathDate')} />
                   <Input label="Hình ảnh" {...register('thumbnail')} defaultValue={data?.thumbnail} />
                   <Select
                     label="Trạng thái"

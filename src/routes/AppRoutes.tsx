@@ -25,10 +25,7 @@ export default function AppRoutes() {
           <Route path="manage-figure" element={<ManageFigure />} />
           <Route path="manage-era" element={<ManageEra />} />
 
-
           <Route path="manage-artifact" element={<ManageArtifact />} />
-
-
         </Route>
       </Route>
       <Route path="auth/google/callback" element={<GoogleOAuthCallbackPage />} />
