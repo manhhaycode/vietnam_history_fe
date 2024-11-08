@@ -1,4 +1,6 @@
 import { CommonModel } from '@/common/types';
+import { IEra } from '@/features/era';
+import { IEvent } from '@/features/event';
 
 export interface IPlace extends CommonModel {
   id: string;
@@ -7,6 +9,8 @@ export interface IPlace extends CommonModel {
   location: string;
   thumbnail: string;
   status: EPlaceStatus;
+  eraId: IEra['id'];   
+  eventId: IEvent['id']; 
 }
 
 export enum EPlaceStatus {
