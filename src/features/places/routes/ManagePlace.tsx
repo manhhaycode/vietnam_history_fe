@@ -7,6 +7,8 @@ import { IPlace } from '../types';
 import { useCreatePlaceMutation, useDeletePlaceMutation, useUpdatePlaceMutation } from '../api';
 import toast from 'react-hot-toast';
 import queryClient from '@/libs/tanstack-query';
+import { useGetEras } from '@/features/era';
+import { useGetEvents } from '@/features/event';
 
 export default function ManagePlace() {
   const upsertPlaceModalState = useDisclosure({ defaultOpen: false });
@@ -30,6 +32,16 @@ export default function ManagePlace() {
   });
 
   const useDeletePlace = useDeletePlaceMutation();
+
+  
+  const { data: eraData } = useGetEras({
+    page: 1,
+    pageSize: 1000
+  });
+  const { data: eventData } = useGetEvents({
+    page: 1,
+    pageSize: 1000
+  });
 
   return (
     <div className="flex flex-col gap-y-6 py-6 px-4">
@@ -73,6 +85,8 @@ export default function ManagePlace() {
       <UpsertPlaceModal
         data={place}
         state={upsertPlaceModalState}
+        eras={(eraData?.data || []).map((era) => ({ id: era.id, name: era.name }))}
+        events={(eventData?.data || []).map((event) => ({ id: event.id, name: event.name }))}
         onSubmitForm={(data, isEdit) => {
           if (isEdit) {
             if (!useUpdatePlace.isPending) useUpdatePlace.mutate({ id: data.id, data });
