@@ -10,19 +10,27 @@ import {
   Textarea,
   useDisclosure,
 } from '@nextui-org/react';
-import { IArtifact, EArtifactStatus } from '@/features/artifacts'; 
+import { IArtifact, EArtifactStatus } from '@/features/artifacts';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
+import { IEra } from '@/features/era';
+import { IEvent } from '@/features/event';
+
 
 export default function UpsertArtifactModal({
   state,
   data,
   onSubmitForm,
-}: {
-  state: ReturnType<typeof useDisclosure>;
-  data: IArtifact | null;
-  onSubmitForm?: (data: IArtifact, isEdit: boolean) => void;
-}) {
+  eras = [],
+  events = [],
+}:
+  {
+    state: ReturnType<typeof useDisclosure>;
+    data: IArtifact | null;
+    onSubmitForm?: (data: IArtifact, isEdit: boolean) => void;
+    eras: { id: IEra['id']; name: string }[];
+    events: { id: IEvent['id']; name: string }[];
+  }) {
   const { handleSubmit, register, reset } = useForm<IArtifact>({
     defaultValues: { status: EArtifactStatus.PENDING },
   });
@@ -53,6 +61,31 @@ export default function UpsertArtifactModal({
                   <Textarea label="Mô tả" {...register('description')} defaultValue={data?.description} />
                   <Input label="Vị trí tìm thấy" {...register('locationFound')} defaultValue={data?.locationFound} />
                   <Input label="Thumbnail" {...register('thumbnail')} defaultValue={data?.thumbnail} />
+
+                  <Select
+                    label="Thời đại"
+                    {...register('eraId')}
+                    defaultSelectedKeys={data?.eraId ? [data.eraId] : undefined}
+                  >
+                    {eras.map((era) => (
+                      <SelectItem key={era.id} value={era.id}>
+                        {era.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+
+                  <Select
+                    label="Sự kiện"
+                    {...register('eventId')}
+                    defaultSelectedKeys={data?.eventId ? [data.eventId] : undefined}
+                  >
+                    {events.map((event) => (
+                      <SelectItem key={event.id} value={event.id}>
+                        {event.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+
                   <Select
                     label="Trạng thái"
                     {...register('status')}
@@ -64,6 +97,7 @@ export default function UpsertArtifactModal({
                       </SelectItem>
                     ))}
                   </Select>
+
                   <Button radius="sm" color="primary" type="submit">
                     {data ? 'Cập nhật' : 'Tạo mới'}
                   </Button>
