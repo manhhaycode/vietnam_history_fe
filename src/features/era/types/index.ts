@@ -8,6 +8,7 @@ export interface IEra extends CommonModel {
   description: string;
   thumbnail: string;
   status: EEraStatus;
+  era: 'AD' | 'BC'; 
 }
 
 export enum EEraStatus {

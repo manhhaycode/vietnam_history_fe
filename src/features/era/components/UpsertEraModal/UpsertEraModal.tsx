@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Input,
@@ -12,8 +13,8 @@ import {
 } from '@nextui-org/react';
 import { EEraStatus, IEra } from '@/features/era';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
 import dayjs from 'dayjs';
+import InputTime from '../InputTime';
 
 export default function UpsertEraModal({
   state,
@@ -25,30 +26,47 @@ export default function UpsertEraModal({
   onSubmitForm?: (data: IEra, isEdit: boolean) => void;
 }) {
   const { handleSubmit, register, reset } = useForm<IEra>({
-    defaultValues: { status: EEraStatus.PENDING },
+    defaultValues: { status: EEraStatus.PENDING, era: 'AD' },
   });
 
+  const [startEra, setStartEra] = useState('AD'); // State cho kỷ nguyên của startDate
+  const [endEra, setEndEra] = useState('AD'); // State cho kỷ nguyên của endDate
+
   const onSubmit = handleSubmit((dataSubmit) => {
-    if (onSubmitForm)
-      onSubmitForm(
-        {
-          ...dataSubmit,
-          startDate: dayjs(dataSubmit.startDate).toISOString(),
-          endDate: dayjs(dataSubmit.endDate).toISOString(),
-        },
-        !!data,
-      );
+    const startDateParts = dataSubmit.startDate.split('/');
+    const endDateParts = dataSubmit.endDate.split('/');
+
+    const startYear = startEra === 'BC' ? (0 - parseInt(startDateParts[0], 10)).toString() : startDateParts[0];
+    const endYear = endEra === 'BC' ? (0 - parseInt(endDateParts[0], 10)).toString() : endDateParts[0];
+
+    const formattedData = {
+      ...dataSubmit,
+      startDate: `${startYear}-${startDateParts[1] || '01'}-01`,
+      endDate: `${endYear}-${endDateParts[1] || '01'}-01`,
+      era: startEra as 'AD' | 'BC',
+    };
+
+    console.log("Dữ liệu gửi đi:", formattedData);
+
+    if (onSubmitForm) {
+      onSubmitForm(formattedData, !!data);
+    }
   });
 
   useEffect(() => {
     if (state.isOpen) {
-      if (data)
+      if (data) {
         reset({
           ...data,
-          startDate: dayjs(data.startDate).format('YYYY-MM-DD'),
-          endDate: dayjs(data.endDate).format('YYYY-MM-DD'),
+          startDate: dayjs(data.startDate).format('YYYY'),
+          endDate: dayjs(data.endDate).format('YYYY'),
+          era: parseInt(data.startDate) < 0 ? 'BC' : 'AD',
         });
-      else setTimeout(() => reset(), 0);
+        setStartEra(parseInt(data.startDate) < 0 ? 'BC' : 'AD');
+        setEndEra(parseInt(data.endDate) < 0 ? 'BC' : 'AD');
+      } else {
+        setTimeout(() => reset(), 0);
+      }
     }
   }, [state.isOpen, data, reset]);
 
@@ -57,15 +75,23 @@ export default function UpsertEraModal({
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">{data ? 'Cập nhật thời đại' : 'Tạo thời đại mới'}</ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">
+              {data ? 'Cập nhật thời đại' : 'Tạo thời đại mới'}
+            </ModalHeader>
             <ModalBody>
               <form onSubmit={onSubmit}>
                 <div className="grid grid-cols-1 gap-4">
                   <Input label="Tên thời đại" {...register('name')} defaultValue={data?.name} />
                   <Textarea label="Mô tả" {...register('description')} defaultValue={data?.description} />
                   <Input label="Hình ảnh" {...register('thumbnail')} defaultValue={data?.thumbnail} />
-                  <Input label="Ngày bắt đầu" {...register('startDate')} defaultValue={data?.startDate} />
-                  <Input label="Ngày kết thúc" {...register('endDate')} />
+                  {/* Truyền các props mới vào InputTime */}
+                  <InputTime
+                    register={register}
+                    startEra={startEra}
+                    setStartEra={setStartEra}
+                    endEra={endEra}
+                    setEndEra={setEndEra}
+                  />
                   <Select
                     label="Trạng thái"
                     {...register('status')}
