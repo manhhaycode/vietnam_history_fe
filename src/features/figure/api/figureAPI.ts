@@ -3,9 +3,7 @@ import { IFigure } from '../types';
 import * as httpRequest from '@/libs/axios';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 
-export const getFigures = async (
-  filter: IPaginationFilter<Partial<IFigure>>
-): Promise<IPagination<IFigure>> => {
+export const getFigures = async (filter: IPaginationFilter<Partial<IFigure>>): Promise<IPagination<IFigure>> => {
   try {
     const response: IPagination<IFigure> = await httpRequest.get('/figures', {
       params: filter,
@@ -43,16 +41,14 @@ export const deleteFigure = async (id: string) => {
   }
 };
 
-export const useGetFigures = (filter: IPaginationFilter<Partial<IFigure>>) => {
+export const useGetFigures = (filter: IPaginationFilter<Partial<IFigure & { eraId: string; eventId: string }>>) => {
   return useQuery({
     queryKey: ['figures', filter],
     queryFn: () => getFigures(filter),
   });
 };
 
-export const useCreateFigureMutation = (
-  options?: UseMutationOptions<any, Error, Partial<IFigure>>
-) => {
+export const useCreateFigureMutation = (options?: UseMutationOptions<any, Error, Partial<IFigure>>) => {
   return useMutation({
     mutationKey: ['createFigure'],
     mutationFn: createFigure,
@@ -61,7 +57,7 @@ export const useCreateFigureMutation = (
 };
 
 export const useUpdateFigureMutation = (
-  options?: UseMutationOptions<any, Error, { id: string; data: Partial<IFigure> }>
+  options?: UseMutationOptions<any, Error, { id: string; data: Partial<IFigure> }>,
 ) => {
   return useMutation({
     mutationKey: ['updateFigure'],
@@ -70,10 +66,7 @@ export const useUpdateFigureMutation = (
   });
 };
 
-
-export const useDeleteFigureMutation = (
-  options?: UseMutationOptions<any, Error, string>
-) => {
+export const useDeleteFigureMutation = (options?: UseMutationOptions<any, Error, string>) => {
   return useMutation({
     mutationKey: ['deleteFigure'],
     mutationFn: deleteFigure,

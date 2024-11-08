@@ -30,7 +30,6 @@ const statusColorMap: Record<EEventStatus, NextUIColor> = {
   [EEventStatus.PUBLISHED]: 'primary',
   [EEventStatus.REJECTED]: 'danger',
   [EEventStatus.DELETED]: 'danger',
-
 };
 
 export default function EventTable({
@@ -58,7 +57,7 @@ export default function EventTable({
     [],
   );
 
-  const { data: events, isFetching } = useGetEvents({ 
+  const { data: events, isFetching } = useGetEvents({
     page,
     pageSize,
     filter,
@@ -86,7 +85,7 @@ export default function EventTable({
               avatarProps={{
                 radius: 'lg',
                 size: 'lg',
-                src: event.name,
+                src: event.thumbnail ?? event.metadata,
                 className: 'flex-shrink-0',
                 fallback: <CiImageOff />,
               }}
@@ -133,9 +132,7 @@ export default function EventTable({
         <div className="flex items-end gap-3">
           <Input
             value={filter.name}
-            onChange={(e) =>
-              setFilter((filter:any) => ({ ...filter, name: e.target.value }))
-            }
+            onChange={(e) => setFilter((filter: any) => ({ ...filter, name: e.target.value }))}
             className="w-fit"
             placeholder="Tìm kiếm sự kiện"
             endContent={<IoIosSearch size={16} className="text-default-400" />}

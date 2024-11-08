@@ -1,14 +1,16 @@
-import { Button, Textarea } from '@nextui-org/react';
+import { Button, Textarea, useDisclosure } from '@nextui-org/react';
 import { useState } from 'react';
 import { FaArrowCircleUp } from 'react-icons/fa';
-import { ImAttachment } from 'react-icons/im';
+import { TbMessage2Question } from 'react-icons/tb';
 
 export default function ConversationInput({
   onSubmit,
   disabled,
+  manageFilterModal,
 }: {
   onSubmit: (message: string, clearMessage: () => void) => void;
   disabled?: boolean;
+  manageFilterModal: ReturnType<typeof useDisclosure>;
 }) {
   const [message, setMessage] = useState('');
   return (
@@ -19,7 +21,14 @@ export default function ConversationInput({
       placeholder="Type a message"
       variant="bordered"
       fullWidth
-      startContent={<Button isIconOnly variant="light" startContent={<ImAttachment size={20} />}></Button>}
+      startContent={
+        <Button
+          onClick={manageFilterModal.onOpen}
+          isIconOnly
+          variant="light"
+          startContent={<TbMessage2Question size={20} />}
+        ></Button>
+      }
       endContent={
         <Button
           onPress={() => onSubmit(message, setMessage.bind(null, ''))}

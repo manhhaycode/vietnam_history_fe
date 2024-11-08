@@ -3,6 +3,15 @@ import { ITopic } from '../types';
 import * as httpRequest from '@/libs/axios';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 
+export const getTopic = async (id: string): Promise<ITopic> => {
+  try {
+    const response = await httpRequest.get(`/topics/${id}`);
+    return response.topic as ITopic;
+  } catch (error) {
+    throw new Error(error as any);
+  }
+};
+
 export const getTopics = async (filter: IPaginationFilter<Partial<ITopic>>): Promise<IPagination<ITopic>> => {
   try {
     const response: IPagination<ITopic> = await httpRequest.get('/topics', {
@@ -41,10 +50,19 @@ export const deleteTopic = async (id: string) => {
   }
 };
 
-export const useGetTopics = (filter: IPaginationFilter<Partial<ITopic>>) => {
+export const useGetTopics = (filter: IPaginationFilter<Partial<ITopic & { eraId: string; eventId: string }>>) => {
   return useQuery({
     queryKey: ['topics', filter],
     queryFn: () => getTopics(filter),
+  });
+};
+
+export const useGetTopic = (id?: string) => {
+  return useQuery({
+    queryKey: ['topic', id],
+    queryFn: () => getTopic(id!),
+    enabled: !!id,
+    placeholderData: undefined,
   });
 };
 

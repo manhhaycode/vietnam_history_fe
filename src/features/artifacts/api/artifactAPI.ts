@@ -41,7 +41,7 @@ export const deleteArtifact = async (id: string) => {
   }
 };
 
-export const useGetArtifacts = (filter: IPaginationFilter<Partial<IArtifact>>) => {
+export const useGetArtifacts = (filter: IPaginationFilter<Partial<IArtifact & { eventId: string; eraId: string }>>) => {
   return useQuery({
     queryKey: ['artifacts', filter],
     queryFn: () => getArtifacts(filter),

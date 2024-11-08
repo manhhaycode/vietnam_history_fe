@@ -131,7 +131,7 @@ export const useCreateMessageConversationMutation = (
   options?: UseMutationOptions<
     IConversationCreateMessageRes,
     Error,
-    { conversationId: string; message: string; metaData?: string }
+    { conversationId: string; message: string; metaData?: string; searchVector?: boolean; searchLimit?: number }
   >,
 ) => {
   return useMutation({

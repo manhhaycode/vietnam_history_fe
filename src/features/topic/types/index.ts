@@ -1,4 +1,6 @@
 import { CommonModel } from '@/common/types';
+import { IEra } from '@/features/era';
+import { IEvent } from '@/features/event';
 
 export interface ITopic extends CommonModel {
   id: string;
@@ -6,6 +8,8 @@ export interface ITopic extends CommonModel {
   description: string;
   thumbnail: string;
   status: ETopicStatus;
+  eras: IEra[];
+  events: IEvent[];
 }
 
 export enum ETopicStatus {

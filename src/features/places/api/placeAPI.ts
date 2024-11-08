@@ -41,7 +41,7 @@ export const deletePlace = async (id: string) => {
   }
 };
 
-export const useGetPlaces = (filter: IPaginationFilter<Partial<IPlace>>) => {
+export const useGetPlaces = (filter: IPaginationFilter<Partial<IPlace & { eventId: string; eraId: string }>>) => {
   return useQuery({
     queryKey: ['places', filter],
     queryFn: () => getPlaces(filter),
@@ -57,7 +57,7 @@ export const useCreatePlaceMutation = (options?: UseMutationOptions<any, Error, 
 };
 
 export const useUpdatePlaceMutation = (
-  options?: UseMutationOptions<any, Error, { id: string; data: Partial<IPlace> }>
+  options?: UseMutationOptions<any, Error, { id: string; data: Partial<IPlace> }>,
 ) => {
   return useMutation({
     mutationKey: ['updatePlace'],

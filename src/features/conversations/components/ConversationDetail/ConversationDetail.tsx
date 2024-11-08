@@ -19,7 +19,7 @@ import queryClient from '@/libs/tanstack-query';
 export default function ConversationDetail() {
   const { conversationId } = useParams();
   const { user } = useAuthStore();
-  const { messages, setMessages } = useConversationStore();
+  const { messages, setMessages, filterScope } = useConversationStore();
   const navigate = useNavigate();
   const [isCreateNew, setIsCreateNew] = useState(false);
   const manageFilterModal = useDisclosure({ defaultOpen: false });
@@ -29,7 +29,13 @@ export default function ConversationDetail() {
       await queryClient.invalidateQueries({ queryKey: ['conversations'] });
       navigate('/conversations/' + conversation.id);
       setMessages([{ ...messages[0], conversationId: conversation.id }]);
-      createMessageConversationMutation.mutate({ conversationId: conversation.id, message: messages[0].content });
+      createMessageConversationMutation.mutate({
+        conversationId: conversation.id,
+        message: messages[0].content,
+        metaData: JSON.stringify(filterScope),
+        searchVector: true,
+        searchLimit: 2,
+      });
     },
     onError: () => {
       console.log('onError');
@@ -90,10 +96,17 @@ export default function ConversationDetail() {
         )}
         <div className="flex flex-col gap-3 w-full items-center">
           <ConversationInput
+            manageFilterModal={manageFilterModal}
             disabled={createConversationMutation.isPending || createMessageConversationMutation.isPending}
             onSubmit={(message, clearMessage) => {
               if (conversationId) {
-                createMessageConversationMutation.mutate({ conversationId, message });
+                createMessageConversationMutation.mutate({
+                  conversationId,
+                  message,
+                  metaData: JSON.stringify(filterScope),
+                  searchVector: true,
+                  searchLimit: 2,
+                });
                 setMessages([
                   ...messages,
                   {

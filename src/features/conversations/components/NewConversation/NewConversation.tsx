@@ -1,4 +1,5 @@
 import { Logo } from '@/assets/icons';
+
 import { Card, CardBody, useDisclosure } from '@nextui-org/react';
 import { BsFillCalendarEventFill } from 'react-icons/bs';
 import { FaMapMarkedAlt } from 'react-icons/fa';
@@ -20,6 +21,7 @@ export default function NewConversation({
           <p className="text-medium text-default-400">
             Chọn phạm vi của câu hỏi để HISVN AI có thể trả lời chính xác hơn
           </p>
+
           <div className="flex flex-wrap w-full justify-center items-center gap-3">
             <Card onPress={manageFilterModal.onOpen} isPressable className="bg-default-100 max-w-72 py-4 px-5 w-1/4">
               <CardBody className="gap-3 text-medium">

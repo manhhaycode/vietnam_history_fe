@@ -6,9 +6,11 @@ export interface IEvent extends CommonModel {
   brief: string;
   content: string;
   location: string;
-  startDate: string; 
-  endDate: string;   
+  startDate: string;
+  endDate: string;
   status: EEventStatus;
+  thumbnail: string;
+  metadata: string;
 }
 
 export enum EEventStatus {

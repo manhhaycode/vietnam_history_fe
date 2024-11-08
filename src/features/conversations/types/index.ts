@@ -32,6 +32,7 @@ export interface IFilterScope {
   artifact: string;
   place: string;
   figure: string;
+  event: string;
 }
 
 export interface ICreateConversationRes extends IResponse {
