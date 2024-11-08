@@ -75,8 +75,8 @@ export default function TopicTable({
   }, [filter, pageSize]);
 
   const renderCell = useCallback(
-    (topics: ITopic, columnKey: keyof ITopic | 'actions') => {
-      const cellValue = topics[columnKey as keyof ITopic];
+    (topics: any, columnKey: any) => {
+      const cellValue = topics[columnKey];
       switch (columnKey) {
         case 'name':
           return (
@@ -95,7 +95,7 @@ export default function TopicTable({
           );
         case 'status':
           return (
-            <Chip className="capitalize" color={statusColorMap[topics.status]} size="sm" variant="flat">
+            <Chip className="capitalize" color={(statusColorMap as any)[topics.status]} size="sm" variant="flat">
               {cellValue}
             </Chip>
           );
