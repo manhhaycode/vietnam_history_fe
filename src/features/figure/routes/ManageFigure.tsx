@@ -4,13 +4,15 @@ import FigureTable from '../components/FigureTable';
 import { useState } from 'react';
 import UpsertFigureModal from '../components/UpsertFigureModal';
 import { IFigure } from '../types';
-import { 
-  useCreateFigureMutation, 
-  useDeleteFigureMutation, 
-  useUpdateFigureMutation 
+import {
+  useCreateFigureMutation,
+  useDeleteFigureMutation,
+  useUpdateFigureMutation
 } from '../api';
 import toast from 'react-hot-toast';
 import queryClient from '@/libs/tanstack-query';
+import { useGetEvents } from '@/features/event';
+import { useGetEras } from '@/features/era';
 
 export default function ManageFigure() {
   const upsertFigureModalState = useDisclosure({ defaultOpen: false });
@@ -35,6 +37,15 @@ export default function ManageFigure() {
 
   const useDeleteFigure = useDeleteFigureMutation();
 
+  const { data: eraData } = useGetEras({
+    page: 1,
+    pageSize: 1000
+  });
+  const { data: eventData } = useGetEvents({
+    page: 1,
+    pageSize: 1000
+  });
+  
   return (
     <div className="flex flex-col gap-y-6 py-6 px-4">
       <div className="flex items-center justify-between">
@@ -77,6 +88,8 @@ export default function ManageFigure() {
       <UpsertFigureModal
         data={figure}
         state={upsertFigureModalState}
+        eras={(eraData?.data || []).map((era) => ({ id: era.id, name: era.name }))}
+        events={(eventData?.data || []).map((event) => ({ id: event.id, name: event.name }))}
         onSubmitForm={(data, isEdit) => {
           if (isEdit) {
             if (!useUpdateFigure.isPending) useUpdateFigure.mutate({ id: data.id, data });

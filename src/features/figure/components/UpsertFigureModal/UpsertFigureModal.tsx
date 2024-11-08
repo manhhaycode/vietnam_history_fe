@@ -14,15 +14,21 @@ import { EFigureStatus, IFigure } from '@/features/figure';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import dayjs from 'dayjs';
+import { IEra } from '@/features/era';
+import { IEvent } from '@/features/event';
 
 export default function UpsertFigureModal({
   state,
   data,
   onSubmitForm,
+  eras = [],
+  events = [],
 }: {
   state: ReturnType<typeof useDisclosure>;
   data: IFigure | null;
   onSubmitForm?: (data: IFigure, isEdit: boolean) => void;
+  eras: { id: IEra['id']; name: string }[];
+  events: { id: IEvent['id']; name: string }[];
 }) {
   const { handleSubmit, register, reset } = useForm<IFigure>({
     defaultValues: { status: EFigureStatus.PENDING },
@@ -66,6 +72,30 @@ export default function UpsertFigureModal({
                   <Input label="Ngày sinh" {...register('birthDate')} />
                   <Input label="Ngày mất" {...register('deathDate')} />
                   <Input label="Hình ảnh" {...register('thumbnail')} defaultValue={data?.thumbnail} />
+
+                  <Select
+                    label="Thời đại"
+                    {...register('eraId')}
+                    defaultSelectedKeys={data?.eraId ? [data.eraId] : undefined}
+                  >
+                    {eras.map((era) => (
+                      <SelectItem key={era.id} value={era.id}>
+                        {era.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+
+                  <Select
+                    label="Sự kiện"
+                    {...register('eventId')}
+                    defaultSelectedKeys={data?.eventId ? [data.eventId] : undefined}
+                  >
+                    {events.map((event) => (
+                      <SelectItem key={event.id} value={event.id}>
+                        {event.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
                   <Select
                     label="Trạng thái"
                     {...register('status')}
