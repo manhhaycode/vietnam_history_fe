@@ -28,7 +28,7 @@ export default function EraFilterScope({ eras }: { eras: IEra[] }) {
               <CarouselItem key={era.id} className="flex flex-col items-center justify-between gap-2 basis-1/2">
                 <Card
                   className={twMerge(
-                    'w-full border-2',
+                    'w-full h-full border-2',
                     filterScope?.era === era.id ? ' border-blue-500' : 'border-transparent',
                   )}
                   shadow="sm"

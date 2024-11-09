@@ -10,10 +10,21 @@ export interface IConversation extends CommonModel {
 
 export type IConversationItem = Omit<IConversation, 'messages'>;
 
+export interface IMessageMetadata {
+  topic?: string[];
+  era?: string[];
+  artifact?: string[];
+  place?: string[];
+  figure?: string[];
+  event?: string[];
+  isBot?: boolean;
+  pending?: boolean;
+}
+
 export interface IMessage extends CommonModel {
   id: string;
   content: string;
-  metadata: string;
+  metadata: IMessageMetadata;
   conversationId?: string;
 }
 
@@ -44,6 +55,7 @@ export interface IConversationMessagesRes extends IResponse {
 }
 
 export interface IConversationCreateMessageRes extends IResponse {
+  metadata: IMessageMetadata;
   result: {
     count: number;
   };

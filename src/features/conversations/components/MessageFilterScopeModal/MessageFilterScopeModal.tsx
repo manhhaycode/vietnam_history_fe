@@ -28,7 +28,7 @@ export default function MessageFilterScopeModal({
   state: ReturnType<typeof useDisclosure>;
   portalContainer?: Element;
 }) {
-  const { topicFilter, artifactFilter, placeFilter, figureFilter, filterScope, setFilterScope, reset } =
+  const { topicFilter, artifactFilter, placeFilter, figureFilter, filterScope, setFilterScope, resetFilter } =
     useConversationStore();
   const { data: topics } = useGetTopics({ filter: { ...topicFilter }, pageSize: 10, page: 1 });
   const { data: topicDetail } = useGetTopic(filterScope?.topic);
@@ -69,7 +69,7 @@ export default function MessageFilterScopeModal({
               <Button
                 className="bg-default-foreground text-default-50 h-12 w-fit justify-start mt-2 mb-3 flex-none"
                 size="sm"
-                onClick={reset}
+                onClick={resetFilter}
               >
                 Đặt lại tất cả
               </Button>

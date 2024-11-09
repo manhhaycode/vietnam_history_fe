@@ -20,7 +20,7 @@ export default function ConversationMessageList() {
       <div className="flex flex-1 flex-col gap-y-4 w-full">
         {messages.map((message) => (
           <Fragment key={message.id}>
-            {message.createdBy === 'bot' ? (
+            {message.metadata?.isBot ? (
               <ConversationMessageAI message={message} />
             ) : (
               <ConversationMessageUser message={message} />

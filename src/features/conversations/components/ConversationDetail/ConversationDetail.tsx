@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import HeaderConversation from './HeaderConversation';
 import {
   useCreateConversationMutation,
   useCreateMessageConversationMutation,
@@ -34,7 +33,7 @@ export default function ConversationDetail() {
         message: messages[0].content,
         metaData: JSON.stringify(filterScope),
         searchVector: true,
-        searchLimit: 2,
+        searchLimit: 10,
       });
     },
     onError: () => {
@@ -42,16 +41,34 @@ export default function ConversationDetail() {
     },
   });
   const createMessageConversationMutation = useCreateMessageConversationMutation({
+    onMutate: (variables) => {
+      setMessages([
+        ...messages,
+        {
+          content: '',
+          id: uuidv4(),
+          metadata: {
+            isBot: true,
+            pending: true,
+          },
+          conversationId: variables.conversationId,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdBy: 'bot',
+          updatedBy: 'bot',
+        },
+      ]);
+    },
     onSuccess: (data, variables) => {
       if (isCreateNew) {
         setIsCreateNew(false);
       }
       setMessages([
-        ...messages,
+        ...messages.slice(0, -1),
         {
           content: data.message,
           id: uuidv4(),
-          metadata: '',
+          metadata: data.metadata,
           conversationId: variables.conversationId,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -81,7 +98,7 @@ export default function ConversationDetail() {
 
   return (
     <div className="w-full h-full flex flex-col border border-divider rounded-xl pb-3 text-small text-default-400">
-      <HeaderConversation />
+      {/* <HeaderConversation /> */}
       <div className="px-6 flex flex-col gap-6 justify-center items-center flex-1 overflow-hidden">
         <div></div>
         {conversationId || messages.length ? (
@@ -105,14 +122,14 @@ export default function ConversationDetail() {
                   message,
                   metaData: JSON.stringify(filterScope),
                   searchVector: true,
-                  searchLimit: 2,
+                  searchLimit: 10,
                 });
                 setMessages([
                   ...messages,
                   {
                     content: message,
                     id: uuidv4(),
-                    metadata: '',
+                    metadata: {},
                     conversationId,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
@@ -126,7 +143,7 @@ export default function ConversationDetail() {
                   {
                     content: message,
                     id: uuidv4(),
-                    metadata: '',
+                    metadata: {},
                     conversationId: '',
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),

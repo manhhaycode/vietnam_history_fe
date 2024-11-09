@@ -26,7 +26,7 @@ export default function PlaceFilterScope({ places }: { places: IPlace[] }) {
             <CarouselItem key={place.id} className="flex flex-col items-center justify-between gap-2 basis-1/2">
               <Card
                 className={twMerge(
-                  'w-full border-2',
+                  'w-full h-full border-2',
                   filterScope?.place === place.id ? ' border-blue-500' : 'border-transparent',
                 )}
                 shadow="sm"

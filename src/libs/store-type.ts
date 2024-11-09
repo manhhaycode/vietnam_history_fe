@@ -39,5 +39,5 @@ export interface ConversationStore {
   setPlaceFilter: (placeFilter: Partial<IPlace> | null) => void;
   setArtifactFilter: (artifactFilter: Partial<IArtifact> | null) => void;
   setMessages: (messages: IMessage[]) => void;
-  reset: () => void;
+  resetFilter: () => void;
 }

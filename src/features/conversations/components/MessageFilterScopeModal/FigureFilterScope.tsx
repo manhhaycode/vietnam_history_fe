@@ -26,8 +26,8 @@ export default function FigureFilterScope({ figures }: { figures: IFigure[] }) {
             <CarouselItem key={figure.id} className="flex flex-col items-center justify-between gap-2 basis-1/2">
               <Card
                 className={twMerge(
-                  'w-full border-2',
-                  filterScope?.event === figure.id ? ' border-blue-500' : 'border-transparent',
+                  'w-full h-full border-2',
+                  filterScope?.figure === figure.id ? ' border-blue-500' : 'border-transparent',
                 )}
                 shadow="sm"
                 isPressable

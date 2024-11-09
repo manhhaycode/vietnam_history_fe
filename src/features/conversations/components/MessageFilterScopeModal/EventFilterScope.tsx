@@ -28,7 +28,7 @@ export function EventFilterScope({ events }: { events: IEvent[] }) {
               <CarouselItem key={event.id} className="flex flex-col items-center justify-between gap-2 basis-1/2">
                 <Card
                   className={twMerge(
-                    'w-full border-2',
+                    'w-full h-full border-2',
                     filterScope?.event === event.id ? ' border-blue-500' : 'border-transparent',
                   )}
                   shadow="sm"

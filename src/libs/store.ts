@@ -48,10 +48,9 @@ export const useConversationStore = create<ConversationStore>((set) => ({
   setFigureFilter: (figureFilter: Partial<IFigure> | null) => set({ figureFilter }),
   setPlaceFilter: (placeFilter: Partial<IPlace> | null) => set({ placeFilter }),
   setArtifactFilter: (artifactFilter: Partial<IArtifact> | null) => set({ artifactFilter }),
-  reset: () =>
+  resetFilter: () =>
     set({
       filterScope: null,
-      messages: [],
       eraFilter: null,
       topicFilter: null,
       eventFilter: null,

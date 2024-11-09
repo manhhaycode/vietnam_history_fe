@@ -24,6 +24,7 @@ export interface IPaginationFilter<T> {
   filter?: T;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  ids?: string[];
 }
 
 export interface IFilter {

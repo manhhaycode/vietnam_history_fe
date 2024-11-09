@@ -27,7 +27,7 @@ export function ArtifactFilterScope({ artifacts }: { artifacts: IArtifact[] }) {
               <Card
                 className={twMerge(
                   'w-full border-2',
-                  filterScope?.event === artifact.id ? ' border-blue-500' : 'border-transparent',
+                  filterScope?.artifact === artifact.id ? ' border-blue-500' : 'border-transparent',
                 )}
                 shadow="sm"
                 isPressable
