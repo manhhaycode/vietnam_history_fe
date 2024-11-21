@@ -86,52 +86,52 @@ export default function EraTable({
               avatarProps={{
                 radius: 'lg',
                 size: 'lg',
-                src: era.name,
+                src: era.thumbnail,  // Sử dụng thumbnail để hiển thị ảnh
                 className: 'flex-shrink-0',
                 fallback: <CiImageOff />,
               }}
               name={cellValue}
             />
           );
-          case 'status':
-            return (
-              <Chip className="capitalize" color={statusColorMap[era.status]} size="sm" variant="flat">
-                {cellValue}
-              </Chip>
-            );
-          case 'description':
-            return <span className="text-sm text-foreground-400 line-clamp-2">{cellValue}</span>;
-          case 'actions':
-            return (
-              <div className="flex justify-center gap-x-3">
-                <Button
-                  isIconOnly
-                  variant="flat"
-                  color="warning"
-                  startContent={<RiPencilLine size={16} />}
-                  onClick={() => {
-                    if (onEdit) {
-                      onEdit(era);
-                    }
-                  }}
-                />
-                <Button
-                  isIconOnly
-                  variant="flat"
-                  color="danger"
-                  startContent={<RiDeleteBinLine size={16} />}
-                  onClick={() => {
-                    onDelete?.([...selectedKeys] as string[]);
-                  }}
-                />
-              </div>
-            );
-          default:
-            return cellValue;
-        }
-      },
-      [onDelete, onEdit, selectedKeys]
-    );
+        case 'status':
+          return (
+            <Chip className="capitalize" color={statusColorMap[era.status]} size="sm" variant="flat">
+              {cellValue}
+            </Chip>
+          );
+        case 'description':
+          return <span className="text-sm text-foreground-400 line-clamp-2">{cellValue}</span>;
+        case 'actions':
+          return (
+            <div className="flex justify-center gap-x-3">
+              <Button
+                isIconOnly
+                variant="flat"
+                color="warning"
+                startContent={<RiPencilLine size={16} />}
+                onClick={() => {
+                  if (onEdit) {
+                    onEdit(era);
+                  }
+                }}
+              />
+              <Button
+                isIconOnly
+                variant="flat"
+                color="danger"
+                startContent={<RiDeleteBinLine size={16} />}
+                onClick={() => {
+                  onDelete?.([...selectedKeys] as string[]);
+                }}
+              />
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [onDelete, onEdit, selectedKeys]
+  );
   
 
   return (
